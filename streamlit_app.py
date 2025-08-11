@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import os
 
 # Configuração da página
 st.set_page_config(
@@ -25,46 +26,56 @@ st.markdown("""
         border-radius: 10px;
         border-left: 5px solid #007bff;
         margin: 1rem 0;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
-    .calibration-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 1.5rem;
-        border-radius: 10px;
-        margin: 1rem 0;
-    }
-    .step-box {
-        background: #fff3cd;
-        padding: 0.75rem;
+    .data-section {
+        background: #e9ecef;
+        padding: 1rem;
+        border-radius: 8px;
         margin: 0.5rem 0;
+    }
+    .status-positive {
+        background: #d4edda;
+        color: #155724;
+        padding: 0.5rem;
         border-radius: 5px;
-        border-left: 3px solid #ffc107;
+        border-left: 4px solid #28a745;
     }
 </style>
 """, unsafe_allow_html=True)
 
-# Função para criar dados de demonstração
+# Função para carregar dados REAIS
 @st.cache_data
-def create_demo_data():
-    return pd.DataFrame({
-        'FipeID': [92983, 95432, 87621, 73291, 84512],
-        'VehicleModelYear': [2024, 2023, 2024, 2025, 2023],
-        'BrandName': ['BMW', 'VOLKSWAGEN', 'MERCEDES-BENZ', 'AUDI', 'TOYOTA'],
-        'VehicleName': [
-            '118i M Sport 1.5 TB 12V Aut. 5p',
-            'Polo TSI 1.0 200 Aut. 5p',
-            'A-Class A200 1.3 TB Aut.',
-            'A3 Sedan 1.4 TFSI Aut.',
-            'Corolla 2.0 XEi Aut.'
-        ],
-        'Abreviacao': ['118i M Sport', 'Polo TSI', 'A200', 'A3 Sedan', 'Corolla XEi'],
-        'ADAS': ['Sim', 'Sim', 'Sim', 'Sim', 'Sim'],
-        'TipoRegulagem': ['Dinamica', 'Estatica', 'Dinamica', 'Estatica/Dinamica', 'Dinamica']
-    })
+def load_vehicle_data(uploaded_file=None):
+    """Carrega dados reais do CSV"""
+    try:
+        if uploaded_file is not None:
+            # Arquivo enviado pelo usuário
+            df = pd.read_csv(uploaded_file, sep=';', encoding='utf-8')
+            return df, "arquivo_enviado", len(df)
+        
+        # Tentar carregar arquivo local primeiro
+        if os.path.exists('processed_data.csv'):
+            df = pd.read_csv('processed_data.csv', sep=';', encoding='utf-8')
+            return df, "arquivo_local", len(df)
+        
+        # Fallback para dados mínimos
+        return pd.DataFrame({
+            'FipeID': [92983, 95432],
+            'VehicleModelYear': [2024, 2023],
+            'BrandName': ['BMW', 'VOLKSWAGEN'],
+            'VehicleName': ['118i M Sport 1.5 TB 12V Aut. 5p', 'Polo TSI 1.0 200 Aut. 5p'],
+            'ADAS': ['Sim', 'Sim'],
+            'Tipo de Regulagem': ['Dinamica', 'Estatica']
+        }), "dados_demo", 2
+        
+    except Exception as e:
+        st.error(f"Erro ao carregar dados: {e}")
+        return pd.DataFrame(), "erro", 0
 
-# Função de busca simples
+# Função de busca inteligente
 def search_vehicles(query, df):
-    if not query:
+    if not query or df.empty:
         return []
     
     query = query.upper().strip()
@@ -72,143 +83,36 @@ def search_vehicles(query, df):
     
     # Busca por FIPE ID
     if query.isdigit():
-        matches = df[df['FipeID'].astype(str) == query]
-        if not matches.empty:
-            return matches.to_dict('records')
+        fipe_matches = df[df['FipeID'].astype(str).str.contains(query)]
+        if not fipe_matches.empty:
+            return fipe_matches.to_dict('records')
     
-    # Busca por texto
+    # Busca textual
     for _, row in df.iterrows():
         score = 0
         
-        # Busca na marca
-        if query in str(row['BrandName']).upper():
+        # Score por marca
+        if query in str(row.get('BrandName', '')).upper():
             score += 50
         
-        # Busca no modelo
-        if query in str(row['VehicleName']).upper():
+        # Score por modelo
+        if query in str(row.get('VehicleName', '')).upper():
             score += 40
         
-        # Busca na abreviação
-        if query in str(row['Abreviacao']).upper():
-            score += 30
+        # Score por abreviação
+        if 'Abreviação de descrição' in row and query in str(row.get('Abreviação de descrição', '')).upper():
+            score += 35
         
-        if score > 0:
+        # Score por ano
+        if query in str(row.get('VehicleModelYear', '')):
+            score += 25
+        
+        if score > 20:  # Threshold mais baixo para mais resultados
             result = row.to_dict()
             result['search_score'] = score
             results.append(result)
     
-    return sorted(results, key=lambda x: x.get('search_score', 0), reverse=True)[:5]
-
-# Função para obter instruções de calibração
-def get_calibration_instructions(brand, calibration_type):
-    instructions_db = {
-        'BMW': {
-            'title': '🔧 Calibração BMW ADAS',
-            'duration': '60-90 minutos',
-            'difficulty': 'Intermediário',
-            'steps': [
-                'Conectar DAS 3000 ou equipamento compatível BMW',
-                'Verificar códigos de defeito e limpar se necessário',
-                'Verificar pressão dos pneus conforme especificação BMW',
-                'Selecionar "BMW" → "Sistemas ADAS" no equipamento',
-                'Escolher tipo de calibração (Estática/Dinâmica)',
-                'Seguir procedimento guiado no equipamento',
-                'Realizar test drive para validação (se dinâmica)',
-                'Verificar funcionamento de todos os sistemas ADAS'
-            ],
-            'requirements': [
-                'Equipamento DAS 3000 ou compatível BMW',
-                'Superfície plana e nivelada para calibração estática',
-                'Pista de teste adequada para calibração dinâmica',
-                'Condições climáticas favoráveis (sem chuva intensa)',
-                'Pneus calibrados conforme especificação',
-                'Alinhamento e geometria da direção em dia'
-            ],
-            'warnings': [
-                'Verificar recalls de software antes da calibração',
-                'Não realizar calibração com códigos de defeito ativos',
-                'Temperatura ambiente deve estar entre 5°C e 35°C'
-            ]
-        },
-        'VOLKSWAGEN': {
-            'title': '🔧 Calibração Volkswagen ADAS',
-            'duration': '30-60 minutos',
-            'difficulty': 'Básico',
-            'steps': [
-                'Conectar VCDS, ODIS ou equipamento compatível',
-                'Verificar e limpar códigos de defeito',
-                'Posicionar veículo conforme especificações VW',
-                'Instalar targets de calibração específicos VW/Audi',
-                'Acessar Central de Conforto → Sistemas ADAS',
-                'Executar "Calibração da Câmera Frontal"',
-                'Aguardar conclusão sem mover o veículo',
-                'Verificar funcionamento dos sistemas'
-            ],
-            'requirements': [
-                'VCDS, ODIS ou equipamento compatível',
-                'Targets específicos do grupo VW/Audi',
-                'Ambiente com iluminação controlada',
-                'Bateria com carga mínima de 12,5V',
-                'Sistema de direção centralizado'
-            ],
-            'warnings': [
-                'Respeitar distâncias exatas para targets',
-                'Não mover o veículo durante calibração estática',
-                'Verificar se para-brisa não possui trincas'
-            ]
-        },
-        'MERCEDES-BENZ': {
-            'title': '🔧 Calibração Mercedes-Benz ADAS',
-            'duration': '60-120 minutos',
-            'difficulty': 'Avançado',
-            'steps': [
-                'Conectar Star Diagnosis ou DAS 3000',
-                'Selecionar modelo específico do veículo Mercedes',
-                'Acessar menu "Sistemas de Assistência ao Condutor"',
-                'Selecionar "Calibração Radar/Câmera"',
-                'Verificar geometria e altura da suspensão',
-                'Seguir procedimento guiado passo a passo',
-                'Confirmar alinhamento de todos os sensores',
-                'Realizar test drive de validação completo'
-            ],
-            'requirements': [
-                'Star Diagnosis ou DAS 3000 atualizado',
-                'Reflectores específicos Mercedes-Benz',
-                'Verificação da altura correta da suspensão',
-                'Pressão dos pneus conforme especificação MB',
-                'Centro de alinhamento certificado Mercedes'
-            ],
-            'warnings': [
-                'Alguns modelos requerem atualização de software obrigatória',
-                'Verificar se suspensão não foi modificada',
-                'Temperatura de operação: -10°C a +50°C'
-            ]
-        }
-    }
-    
-    # Instruções padrão para marcas não mapeadas
-    default_instructions = {
-        'title': f'🔧 Calibração {brand} ADAS',
-        'duration': '45-75 minutos',
-        'difficulty': 'Intermediário',
-        'steps': [
-            'Conectar equipamento de diagnóstico adequado',
-            'Verificar pré-requisitos do sistema',
-            'Seguir procedimento específico do fabricante',
-            'Realizar validação conforme manual técnico'
-        ],
-        'requirements': [
-            'Equipamento compatível com a marca',
-            'Manual técnico atualizado',
-            'Ambiente adequado para calibração'
-        ],
-        'warnings': [
-            'Consultar documentação específica',
-            'Verificar atualizações disponíveis'
-        ]
-    }
-    
-    return instructions_db.get(brand, default_instructions)
+    return sorted(results, key=lambda x: x.get('search_score', 0), reverse=True)[:10]
 
 # Header principal
 st.markdown("""
@@ -218,35 +122,66 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# Carregar dados
-df = create_demo_data()
-
-# Sidebar
+# Sidebar para configurações
 with st.sidebar:
     st.header("⚙️ Configurações")
+    
+    # Upload opcional do CSV
+    uploaded_file = st.file_uploader(
+        "📁 Carregar Base Personalizada",
+        type=['csv'],
+        help="Opcional: Envie um arquivo CSV personalizado"
+    )
+    
     st.markdown("---")
-    
-    st.subheader("📊 Estatísticas")
-    total_vehicles = len(df)
-    vehicles_with_adas = len(df[df['ADAS'] == 'Sim'])
-    unique_brands = df['BrandName'].nunique()
-    
-    st.metric("Total de Veículos", total_vehicles)
-    st.metric("Veículos com ADAS", vehicles_with_adas)
-    st.metric("Marcas Únicas", unique_brands)
-    
-    st.info("ℹ️ Usando dados de demonstração")
+
+# Carregar dados
+df, data_source, total_records = load_vehicle_data(uploaded_file)
+
+# Status dos dados
+if data_source == "arquivo_enviado":
+    st.success(f"✅ Arquivo personalizado carregado: {total_records:,} veículos")
+elif data_source == "arquivo_local":
+    st.success(f"✅ Base de dados carregada: {total_records:,} veículos com dados ADAS")
+elif data_source == "dados_demo":
+    st.warning("⚠️ Usando dados de demonstração limitados")
+else:
+    st.error("❌ Erro ao carregar dados")
+
+# Estatísticas na sidebar
+with st.sidebar:
+    if not df.empty:
+        st.subheader("📊 Estatísticas da Base")
+        
+        # Métricas básicas
+        st.metric("Total de Veículos", f"{len(df):,}")
+        
+        if 'ADAS' in df.columns:
+            adas_count = (df['ADAS'] == 'Sim').sum()
+            adas_percent = (adas_count / len(df) * 100) if len(df) > 0 else 0
+            st.metric("Veículos com ADAS", f"{adas_count:,} ({adas_percent:.1f}%)")
+        
+        if 'BrandName' in df.columns:
+            unique_brands = df['BrandName'].nunique()
+            st.metric("Marcas na Base", unique_brands)
+        
+        # Top 5 marcas
+        if 'BrandName' in df.columns and len(df) > 5:
+            st.write("**Top 5 Marcas:**")
+            top_brands = df['BrandName'].value_counts().head(5)
+            for brand, count in top_brands.items():
+                st.write(f"• {brand}: {count:,}")
 
 # Interface de busca
-st.subheader("🔍 Buscar Veículo")
+st.subheader("🔍 Buscar Veículo na Base ADAS")
 
 col1, col2 = st.columns([4, 1])
 
 with col1:
     search_query = st.text_input(
         "",
-        placeholder="Digite código FIPE, marca ou modelo (ex: BMW, 92983, Polo)",
-        help="Busque por código FIPE, marca ou modelo do veículo"
+        placeholder="Digite código FIPE, marca, modelo ou ano (ex: BMW, 92983, Polo, 2024)",
+        help="Busque por qualquer informação do veículo"
     )
 
 with col2:
@@ -254,100 +189,114 @@ with col2:
 
 # Processar busca
 if search_button and search_query:
-    with st.spinner("🔄 Buscando..."):
+    with st.spinner("🔄 Buscando na base de dados..."):
         results = search_vehicles(search_query, df)
     
     if results:
-        st.success(f"✅ Encontrados {len(results)} veículo(s)")
+        st.success(f"✅ Encontrados {len(results)} veículo(s) para: '{search_query}'")
         
         for i, vehicle in enumerate(results):
             # Card do veículo
             st.markdown(f"""
             <div class="vehicle-card">
-                <h3>🚗 {vehicle['BrandName']} {vehicle['VehicleName']}</h3>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                    <div><strong>Ano:</strong> {vehicle['VehicleModelYear']}</div>
-                    <div><strong>FIPE:</strong> {vehicle['FipeID']}</div>
-                    <div><strong>ADAS:</strong> {'✅ Sim' if vehicle['ADAS'] == 'Sim' else '❌ Não'}</div>
-                    <div><strong>Calibração:</strong> {vehicle['TipoRegulagem']}</div>
+                <h3>🚗 {vehicle.get('BrandName', 'N/A')} {vehicle.get('VehicleName', 'N/A')}</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+                    <div><strong>Ano:</strong> {vehicle.get('VehicleModelYear', 'N/A')}</div>
+                    <div><strong>FIPE ID:</strong> {vehicle.get('FipeID', 'N/A')}</div>
+                    <div><strong>ADAS:</strong> {'✅ Sim' if vehicle.get('ADAS') == 'Sim' else '❌ Não'}</div>
                 </div>
             </div>
             """, unsafe_allow_html=True)
             
-            # Instruções de calibração
-            if vehicle['ADAS'] == 'Sim':
-                instructions = get_calibration_instructions(
-                    vehicle['BrandName'], 
-                    vehicle['TipoRegulagem']
-                )
+            # Detalhes ADAS se disponível
+            if vehicle.get('ADAS') == 'Sim':
+                st.markdown('<div class="status-positive">', unsafe_allow_html=True)
+                st.write("**✅ Este veículo possui sistemas ADAS**")
+                st.markdown('</div>', unsafe_allow_html=True)
                 
-                # Header das instruções
-                st.markdown(f"""
-                <div class="calibration-header">
-                    <h3>{instructions['title']}</h3>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-top: 1rem;">
-                        <div><strong>⏱️ Duração:</strong> {instructions['duration']}</div>
-                        <div><strong>📊 Dificuldade:</strong> {instructions['difficulty']}</div>
-                        <div><strong>🔧 Tipo:</strong> Calibração Profissional</div>
-                    </div>
-                </div>
-                """, unsafe_allow_html=True)
-                
-                # Procedimento e requisitos
                 col1, col2 = st.columns(2)
                 
                 with col1:
-                    st.subheader("📝 Procedimento Passo a Passo")
-                    for j, step in enumerate(instructions['steps'], 1):
-                        st.markdown(f"""
-                        <div class="step-box">
-                            <strong>Passo {j}:</strong> {step}
-                        </div>
-                        """, unsafe_allow_html=True)
-                
-                with col2:
-                    st.subheader("📋 Requisitos")
-                    for req in instructions['requirements']:
-                        st.write(f"• {req}")
+                    st.write("**🎯 Características ADAS:**")
                     
-                    st.subheader("⚠️ Avisos Importantes")
-                    for warning in instructions['warnings']:
-                        st.warning(f"⚠️ {warning}")
-                
-                # Botões de ação
-                col1, col2, col3 = st.columns(3)
-                
-                with col1:
-                    if st.button(f"📋 Gerar Relatório", key=f"report_{i}"):
-                        st.success("✅ Relatório gerado!")
-                        st.info("💾 Funcionalidade de download será implementada")
+                    # Mostrar dados reais do CSV
+                    adas_features = [
+                        ('ADAS no Parabrisa', 'ADAS no Parabrisa'),
+                        ('ADAS no Parachoque', 'Adas no Parachoque'),
+                        ('Câmera Retrovisor', 'Camera no Retrovisor'),
+                        ('Faróis Matrix', 'Faróis Matrix')
+                    ]
+                    
+                    for display_name, col_name in adas_features:
+                        if col_name in vehicle:
+                            value = vehicle[col_name]
+                            if pd.notna(value):
+                                icon = "✅" if value == "Sim" else "❌" if value == "Não" else "❓"
+                                st.write(f"• {display_name}: {icon}")
                 
                 with col2:
-                    if st.button(f"⭐ Favoritar", key=f"fav_{i}"):
-                        st.success("⭐ Adicionado aos favoritos!")
+                    st.write("**⚙️ Informações Técnicas:**")
+                    
+                    # Informações técnicas do CSV
+                    tech_info = [
+                        ('Tipo de Regulagem', 'Tipo de Regulagem'),
+                        ('Abreviação', 'Abreviação de descrição'),
+                        ('Seção', 'Secao'),
+                        ('Descrição', 'Descrição')
+                    ]
+                    
+                    for display_name, col_name in tech_info:
+                        if col_name in vehicle and pd.notna(vehicle[col_name]):
+                            value = vehicle[col_name]
+                            if len(str(value)) < 100:  # Evitar textos muito longos
+                                st.write(f"• **{display_name}:** {value}")
                 
-                with col3:
-                    if st.button(f"🔧 Troubleshooting", key=f"trouble_{i}"):
-                        st.info("🔧 Guia de solução de problemas em desenvolvimento")
+                # Link para documentação oficial
+                st.info("""
+                📚 **Para instruções de calibração específicas:**
+                • Consulte o manual técnico do fabricante
+                • Acesse a documentação Bosch: https://help.boschdiagnostics.com/DAS3000/
+                • Use equipamento certificado (DAS 3000, VCDS, ODIS, etc.)
+                """)
+            
+            else:
+                st.warning("⚠️ Este veículo não possui sistemas ADAS registrados na base.")
             
             st.markdown("---")
     
     else:
         st.error(f"❌ Nenhum veículo encontrado para: '{search_query}'")
-        st.info("💡 Dicas: Tente 'BMW', 'Polo', ou '92983'")
+        st.info("💡 **Dicas:** Tente termos como 'BMW', 'Polo', 'Mercedes', ou códigos FIPE")
 
-# Mostrar base de dados
-st.markdown("---")
-st.subheader("📊 Base de Dados Completa")
-st.dataframe(df, use_container_width=True)
+# Mostrar informações sobre a base
+if not df.empty and data_source == "arquivo_local":
+    st.markdown("---")
+    st.subheader("📊 Informações da Base de Dados")
+    
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        st.metric("📁 Fonte", "processed_data.csv")
+    
+    with col2:
+        if 'ADAS' in df.columns:
+            calibration_types = df['Tipo de Regulagem'].value_counts()
+            st.write("**Tipos de Calibração:**")
+            for cal_type, count in calibration_types.head(3).items():
+                if pd.notna(cal_type):
+                    st.write(f"• {cal_type}: {count:,}")
+    
+    with col3:
+        st.write("**Colunas Disponíveis:**")
+        st.write(f"• {len(df.columns)} campos por veículo")
+        if len(df.columns) > 15:
+            st.write("• Base completa carregada ✅")
 
 # Footer
 st.markdown("---")
 st.markdown("""
-<div style="text-align: center; color: #666; padding: 2rem;">
-    <p>🔧 <strong>Sistema ADAS Pro</strong> | Desenvolvido para profissionais da área automotiva</p>
-    <p>💡 Sugestões? Entre em contato: desenvolvimento@adas.com</p>
+<div style="text-align: center; color: #666; padding: 1rem;">
+    <p>🔧 <strong>Sistema ADAS Pro</strong> | Dados técnicos baseados em informações oficiais</p>
+    <p>⚠️ Sempre consulte a documentação oficial do fabricante para procedimentos de calibração</p>
 </div>
 """, unsafe_allow_html=True)
-
-st.write(f"**Versão do Streamlit:** {st.__version__}")
