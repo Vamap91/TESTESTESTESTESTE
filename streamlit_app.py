@@ -31,7 +31,219 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Mapeamento das marcas para links da documentação Bosch
+# Mapeamento específico de calibração por marca - PILOTO
+BOSCH_CALIBRATION_LINKS = {
+    'ALFA ROMEO': {
+        'camera_frontal': [
+            {
+                'name': 'Calibração da câmera frontal (Opção 1)',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/417.pdf'
+            },
+            {
+                'name': 'Calibração da câmera frontal (Opção 2)',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/407.pdf'
+            }
+        ],
+        'radar_frontal': [
+            {
+                'name': 'Calibração do radar frontal',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/438.pdf'
+            }
+        ]
+    },
+    
+    'AUDI': {
+        'camera_360': [
+            {
+                'name': 'Calibração da câmera 360 graus (visão surround)',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/498.pdf'
+            }
+        ],
+        'camera_frontal': [
+            {
+                'name': 'Calibração da câmera frontal (Opção 1)',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/418.pdf'
+            },
+            {
+                'name': 'Calibração da câmera frontal (Opção 2)',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/382.pdf'
+            }
+        ],
+        'camera_traseira': [
+            {
+                'name': 'Calibração da câmera traseira',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/512.pdf'
+            }
+        ],
+        'radar_frontal': [
+            {
+                'name': 'Calibração do radar frontal',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/438.pdf'
+            }
+        ],
+        'radar_traseiro': [
+            {
+                'name': 'Calibração do radar traseiro',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/578.pdf'
+            }
+        ],
+        'lidar': [
+            {
+                'name': 'Calibração Lidar',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/522.pdf'
+            }
+        ]
+    },
+    
+    'BENTLEY': {
+        'camera_frontal': [
+            {
+                'name': 'Calibração da câmera frontal (Opção 1)',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/462.pdf'
+            },
+            {
+                'name': 'Calibração da câmera frontal (Opção 2)',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/463.pdf'
+            }
+        ],
+        'radar_frontal': [
+            {
+                'name': 'Calibração do radar frontal',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/438.pdf'
+            }
+        ]
+    },
+    
+    'BMW': {
+        'radar_frontal': [
+            {
+                'name': 'Calibração do radar frontal BMW/MINI',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/496.pdf'
+            }
+        ]
+    },
+    
+    'MINI': {
+        'radar_frontal': [
+            {
+                'name': 'Calibração do radar frontal BMW/MINI',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/496.pdf'
+            }
+        ]
+    },
+    
+    'MERCEDES': {
+        'camera_frontal': [
+            {
+                'name': 'Calibração da câmera frontal (Padrão)',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/425.pdf'
+            },
+            {
+                'name': 'Calibração da câmera frontal (Alternativa)',
+                'link': 'http://mediathek.bosch-automotive.com/files/common/documents/1690/386072.pdf'
+            }
+        ],
+        'camera_frontal_ar': [
+            {
+                'name': 'Calibração da câmera frontal (Augmented Reality) - Opção 1',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/539.pdf'
+            },
+            {
+                'name': 'Calibração da câmera frontal (Augmented Reality) - Opção 2',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/540.pdf'
+            }
+        ],
+        'camera_traseira': [
+            {
+                'name': 'Calibração da câmera traseira',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/508.pdf'
+            }
+        ]
+    },
+    
+    'MERCEDES-BENZ': {
+        'camera_frontal': [
+            {
+                'name': 'Calibração da câmera frontal (Padrão)',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/425.pdf'
+            },
+            {
+                'name': 'Calibração da câmera frontal (Alternativa)',
+                'link': 'http://mediathek.bosch-automotive.com/files/common/documents/1690/386072.pdf'
+            }
+        ],
+        'camera_frontal_ar': [
+            {
+                'name': 'Calibração da câmera frontal (Augmented Reality) - Opção 1',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/539.pdf'
+            },
+            {
+                'name': 'Calibração da câmera frontal (Augmented Reality) - Opção 2',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/540.pdf'
+            }
+        ],
+        'camera_traseira': [
+            {
+                'name': 'Calibração da câmera traseira',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/508.pdf'
+            }
+        ]
+    }
+}
+
+def get_calibration_links(brand_name, vehicle_data):
+    """Retorna links específicos de calibração baseado na marca e características do veículo"""
+    if not brand_name:
+        return []
+    
+    # Normalizar nome da marca
+    brand_upper = brand_name.upper().strip()
+    
+    # Verificar se a marca está no piloto
+    if brand_upper not in BOSCH_CALIBRATION_LINKS:
+        return []
+    
+    brand_links = BOSCH_CALIBRATION_LINKS[brand_upper]
+    available_links = []
+    
+    # Mapear características do veículo para tipos de calibração
+    characteristics = {
+        'ADAS no Parabrisa': vehicle_data.get('ADAS no Parabrisa', ''),
+        'Adas no Parachoque': vehicle_data.get('Adas no Parachoque', ''),
+        'Camera no Retrovisor': vehicle_data.get('Camera no Retrovisor', ''),
+        'Faróis Matrix': vehicle_data.get('Faróis Matrix', '')
+    }
+    
+    # Câmera frontal (ADAS no parabrisa)
+    if characteristics['ADAS no Parabrisa'] == 'Sim':
+        if 'camera_frontal' in brand_links:
+            available_links.extend(brand_links['camera_frontal'])
+        # Para Mercedes, verificar se tem AR
+        if brand_upper in ['MERCEDES', 'MERCEDES-BENZ'] and 'camera_frontal_ar' in brand_links:
+            available_links.extend(brand_links['camera_frontal_ar'])
+    
+    # Radar frontal (ADAS no parachoque)
+    if characteristics['Adas no Parachoque'] == 'Sim':
+        if 'radar_frontal' in brand_links:
+            available_links.extend(brand_links['radar_frontal'])
+    
+    # Câmera traseira (baseado em câmera retrovisor)
+    if characteristics['Camera no Retrovisor'] == 'Sim':
+        if 'camera_traseira' in brand_links:
+            available_links.extend(brand_links['camera_traseira'])
+        if 'radar_traseiro' in brand_links:
+            available_links.extend(brand_links['radar_traseiro'])
+    
+    # Para Audi, adicionar opções especiais
+    if brand_upper == 'AUDI':
+        if 'camera_360' in brand_links:
+            available_links.extend(brand_links['camera_360'])
+        if 'lidar' in brand_links:
+            available_links.extend(brand_links['lidar'])
+    
+    return available_links
+
+# Mapeamento das marcas para links da documentação Bosch (fallback)
 BOSCH_LINKS = {
     'ALFA ROMEO': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
     'AUDI': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
@@ -302,13 +514,100 @@ def main():
                         if vehicle.get('Abreviação de descrição'):
                             st.write(f"• **Modelo:** {vehicle['Abreviação de descrição']}")
                     
-                    # Link para Bosch
-                    st.info("""
-                    📚 **Para calibração específica:**
-                    • Consulte: https://help.boschdiagnostics.com/DAS3000/
-                    • Use equipamento certificado (DAS 3000, VCDS, ODIS)
-                    • Sempre siga o manual oficial do fabricante
-                    """)
+                    # Links específicos de calibração para o piloto
+                    brand_name = vehicle.get('BrandName', '')
+                    calibration_links = get_calibration_links(brand_name, vehicle)
+                    
+                    if calibration_links:
+                        st.success(f"""
+                        🎯 **Links Específicos de Calibração para {brand_name}:**
+                        """)
+                        
+                        # Organizar links por categoria
+                        st.markdown("### 📋 **Instruções Específicas Disponíveis:**")
+                        
+                        for i, link_data in enumerate(calibration_links):
+                            col_link1, col_link2 = st.columns([3, 1])
+                            
+                            with col_link1:
+                                st.markdown(f"""
+                                **📖 {link_data['name']}**  
+                                *Compatível com as características detectadas neste veículo*
+                                """)
+                            
+                            with col_link2:
+                                st.markdown(f"""
+                                <a href="{link_data['link']}" target="_blank">
+                                    <button style="
+                                        background: linear-gradient(90deg, #dc3545, #c82333);
+                                        color: white;
+                                        border: none;
+                                        padding: 8px 16px;
+                                        border-radius: 5px;
+                                        cursor: pointer;
+                                        font-weight: bold;
+                                        width: 100%;
+                                        font-size: 12px;
+                                    ">
+                                        📄 Abrir PDF
+                                    </button>
+                                </a>
+                                """, unsafe_allow_html=True)
+                            
+                            st.markdown("---")
+                        
+                        # Resumo das características que geraram os links
+                        st.info(f"""
+                        ✅ **Links baseados nas características detectadas:**
+                        • ADAS no Parabrisa: {vehicle.get('ADAS no Parabrisa', 'N/A')}
+                        • ADAS no Parachoque: {vehicle.get('Adas no Parachoque', 'N/A')}
+                        • Câmera Retrovisor: {vehicle.get('Camera no Retrovisor', 'N/A')}
+                        • Faróis Matrix: {vehicle.get('Faróis Matrix', 'N/A')}
+                        """)
+                        
+                        # Aviso importante
+                        st.warning("""
+                        ⚠️ **IMPORTANTE - PILOTO ATIVO:**
+                        • Estes links são específicos para **{brand_name}**
+                        • Sempre verifique a compatibilidade exata do modelo
+                        • Use apenas equipamento certificado (DAS 3000, etc.)
+                        • Siga rigorosamente as instruções do PDF
+                        """.format(brand_name=brand_name))
+                    
+                    else:
+                        # Para marcas não cobertas pelo piloto
+                        if brand_name.upper() in ['ALFA ROMEO', 'AUDI', 'BENTLEY', 'BMW', 'MINI', 'MERCEDES', 'MERCEDES-BENZ']:
+                            st.warning(f"""
+                            🔧 **{brand_name} - Piloto em Desenvolvimento**
+                            • Esta marca está em nossa base piloto
+                            • Links específicos serão exibidos conforme características detectadas
+                            • Para este veículo específico, consulte manual geral
+                            """)
+                        else:
+                            st.info(f"""
+                            📚 **{brand_name} - Consulta Manual Necessária**
+                            • Esta marca ainda não está no piloto de links específicos
+                            • Consulte a documentação geral da Bosch
+                            • Em breve teremos links específicos para mais marcas
+                            """)
+                        
+                        # Link para documentação geral
+                        st.markdown(f"""
+                        <a href="https://help.boschdiagnostics.com/DAS3000/" target="_blank">
+                            <button style="
+                                background: linear-gradient(90deg, #007bff, #0056b3);
+                                color: white;
+                                border: none;
+                                padding: 10px 20px;
+                                border-radius: 5px;
+                                cursor: pointer;
+                                font-weight: bold;
+                                width: 100%;
+                            ">
+                                📖 Acessar Documentação Geral Bosch
+                            </button>
+                        </a>
+                        """, unsafe_allow_html=True)
                 
                 st.markdown("---")
         
