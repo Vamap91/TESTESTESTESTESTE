@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import os
 
-# Configuração da página - DEVE ser a primeira linha Streamlit
+# Configuração da página
 st.set_page_config(
     page_title="Sistema ADAS Pro",
     page_icon="🔧",
