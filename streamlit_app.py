@@ -388,7 +388,7 @@ def load_vehicle_data():
     return df, "⚠️ Usando dados de demonstração (5 veículos)"
 
 def search_vehicles(query, df, year_filter=None):
-    """Busca inteligente nos veículos com filtro de ano"""
+    """Busca inteligente nos veículos com filtro de ano e eliminação de duplicatas"""
     if df.empty:
         return []
     
@@ -404,7 +404,9 @@ def search_vehicles(query, df, year_filter=None):
     # Se não há query, retornar apenas filtro de ano
     if not query:
         if year_filter and year_filter != "Todos os anos":
-            return filtered_df.head(20).to_dict('records')  # Limitar a 20 resultados
+            # Eliminar duplicatas por FipeID
+            unique_df = filtered_df.drop_duplicates(subset=['FipeID'], keep='first')
+            return unique_df.head(20).to_dict('records')
         else:
             return []
     
@@ -415,10 +417,19 @@ def search_vehicles(query, df, year_filter=None):
     if query.isdigit():
         fipe_matches = filtered_df[filtered_df['FipeID'].astype(str) == query]
         if not fipe_matches.empty:
-            return fipe_matches.to_dict('records')
+            # Eliminar duplicatas por FipeID para busca por código
+            unique_fipe = fipe_matches.drop_duplicates(subset=['FipeID'], keep='first')
+            return unique_fipe.to_dict('records')
     
     # Busca textual com score
+    seen_fipe_ids = set()  # Para controlar duplicatas
+    
     for _, row in filtered_df.iterrows():
+        # Verificar se já processamos este FIPE ID
+        fipe_id = row.get('FipeID')
+        if fipe_id in seen_fipe_ids:
+            continue
+        
         score = 0
         
         # Score por marca (peso maior)
@@ -441,6 +452,7 @@ def search_vehicles(query, df, year_filter=None):
             result = row.to_dict()
             result['search_score'] = score
             results.append(result)
+            seen_fipe_ids.add(fipe_id)  # Marcar como processado
     
     # Ordenar por relevância e limitar a 10
     return sorted(results, key=lambda x: x.get('search_score', 0), reverse=True)[:10]
@@ -507,6 +519,9 @@ def main():
             results = search_vehicles(search_query, df, year_filter)
         
         if results:
+            # Contar resultados únicos
+            unique_fipe_ids = len(set(r.get('FipeID') for r in results))
+            
             # Mostrar filtros aplicados
             filters_applied = []
             if search_query:
@@ -515,7 +530,11 @@ def main():
                 filters_applied.append(f"Ano: {year_filter}")
             
             filter_text = " | ".join(filters_applied) if filters_applied else "Todos"
-            st.success(f"✅ Encontrados {len(results)} resultado(s) - Filtros: {filter_text}")
+            st.success(f"✅ Encontrados {len(results)} resultado(s) único(s) - Filtros: {filter_text}")
+            
+            # Aviso sobre eliminação de duplicatas se aplicável
+            if len(results) < 10 and search_query and search_query.isdigit():
+                st.info("💡 Duplicatas eliminadas - mostrando apenas veículos únicos por código FIPE")
             
             for vehicle in results:
                 # Card do veículo
