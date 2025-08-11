@@ -31,6 +31,69 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+# Mapeamento das marcas para links da documentação Bosch
+BOSCH_LINKS = {
+    'ALFA ROMEO': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
+    'AUDI': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
+    'BENTLEY': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
+    'BMW': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
+    'MINI': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
+    'CITROEN': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
+    'CUPRA': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
+    'DAIHATSU': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
+    'FIAT': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
+    'JEEP': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
+    'FORD': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
+    'HONDA': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
+    'HYUNDAI': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
+    'INFINITI': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
+    'IVECO': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
+    'KIA': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
+    'LAMBORGHINI': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
+    'LEXUS': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
+    'MAN': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
+    'MASERATI': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
+    'MAZDA': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
+    'MERCEDES': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
+    'MERCEDES-BENZ': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
+    'MITSUBISHI': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
+    'NISSAN': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
+    'OPEL': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
+    'PEUGEOT': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
+    'POLESTAR': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
+    'PORSCHE': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
+    'RENAULT': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
+    'SEAT': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
+    'SKODA': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
+    'SMART': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
+    'SUBARU': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
+    'SUZUKI': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
+    'TOYOTA': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
+    'VOLKSWAGEN': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
+    'VOLVO': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
+    'LAND ROVER': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default'
+}
+
+def get_bosch_link(brand_name):
+    """Retorna o link específico da Bosch para a marca"""
+    if not brand_name:
+        return None
+    
+    # Normalizar nome da marca
+    brand_upper = brand_name.upper().strip()
+    
+    # Verificar variações comuns
+    brand_mapping = {
+        'BMW/MINI': 'BMW',
+        'FIAT/JEEP': 'FIAT',
+        'MERCEDES-BENZ': 'MERCEDES',
+        'VOLVO CAMINHÕES': 'VOLVO'
+    }
+    
+    brand_normalized = brand_mapping.get(brand_upper, brand_upper)
+    
+    return BOSCH_LINKS.get(brand_normalized)
+
 @st.cache_data
 def load_vehicle_data():
     """Carrega dados com fallback para demo se CSV não existir"""
