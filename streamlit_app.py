@@ -73,22 +73,38 @@ def load_vehicle_data():
     df = pd.DataFrame(demo_data)
     return df, "⚠️ Usando dados de demonstração (5 veículos)"
 
-def search_vehicles(query, df):
-    """Busca inteligente nos veículos"""
-    if not query or df.empty:
+def search_vehicles(query, df, year_filter=None):
+    """Busca inteligente nos veículos com filtro de ano"""
+    if df.empty:
         return []
+    
+    # Aplicar filtro de ano primeiro
+    filtered_df = df.copy()
+    if year_filter and year_filter != "Todos os anos":
+        try:
+            year_int = int(year_filter)
+            filtered_df = filtered_df[filtered_df['VehicleModelYear'] == year_int]
+        except ValueError:
+            pass
+    
+    # Se não há query, retornar apenas filtro de ano
+    if not query:
+        if year_filter and year_filter != "Todos os anos":
+            return filtered_df.head(20).to_dict('records')  # Limitar a 20 resultados
+        else:
+            return []
     
     query = query.upper().strip()
     results = []
     
     # Busca por FIPE ID exato
     if query.isdigit():
-        fipe_matches = df[df['FipeID'].astype(str) == query]
+        fipe_matches = filtered_df[filtered_df['FipeID'].astype(str) == query]
         if not fipe_matches.empty:
             return fipe_matches.to_dict('records')
     
     # Busca textual com score
-    for _, row in df.iterrows():
+    for _, row in filtered_df.iterrows():
         score = 0
         
         # Score por marca (peso maior)
@@ -102,10 +118,6 @@ def search_vehicles(query, df):
         # Score por abreviação
         if query in str(row.get('Abreviação de descrição', '')).upper():
             score += 35
-        
-        # Score por ano
-        if query in str(row.get('VehicleModelYear', '')):
-            score += 25
         
         # Score por FIPE parcial
         if query in str(row.get('FipeID', '')):
@@ -153,25 +165,43 @@ def main():
     # Interface de busca
     st.subheader("🔍 Buscar Veículo")
     
-    col1, col2 = st.columns([4, 1])
+    # Filtros de busca
+    col1, col2, col3 = st.columns([3, 1.5, 1])
     
     with col1:
         search_query = st.text_input(
             "Digite para buscar:",
-            placeholder="Ex: BMW, Polo, 92983, 2024",
-            help="Busque por marca, modelo, código FIPE ou ano"
+            placeholder="Ex: BMW, Polo, 92983",
+            help="Busque por marca, modelo ou código FIPE"
         )
     
     with col2:
+        # Filtro de ano
+        years_available = sorted(df['VehicleModelYear'].unique(), reverse=True)
+        year_filter = st.selectbox(
+            "📅 Filtrar por Ano:",
+            options=["Todos os anos"] + [str(year) for year in years_available],
+            help="Selecione um ano específico"
+        )
+    
+    with col3:
         search_button = st.button("🔍 Buscar", type="primary")
     
     # Processar busca
-    if search_button and search_query:
+    if search_button or search_query or (year_filter and year_filter != "Todos os anos"):
         with st.spinner("Buscando..."):
-            results = search_vehicles(search_query, df)
+            results = search_vehicles(search_query, df, year_filter)
         
         if results:
-            st.success(f"✅ Encontrados {len(results)} resultado(s)")
+            # Mostrar filtros aplicados
+            filters_applied = []
+            if search_query:
+                filters_applied.append(f"Termo: '{search_query}'")
+            if year_filter and year_filter != "Todos os anos":
+                filters_applied.append(f"Ano: {year_filter}")
+            
+            filter_text = " | ".join(filters_applied) if filters_applied else "Todos"
+            st.success(f"✅ Encontrados {len(results)} resultado(s) - Filtros: {filter_text}")
             
             for vehicle in results:
                 # Card do veículo
@@ -220,8 +250,35 @@ def main():
                 st.markdown("---")
         
         else:
-            st.error(f"❌ Nenhum resultado para: '{search_query}'")
+            filter_msg = f" com filtros aplicados" if (search_query or year_filter != "Todos os anos") else ""
+            st.error(f"❌ Nenhum resultado encontrado{filter_msg}")
             st.info("💡 Tente: 'BMW', 'Polo', 'Mercedes' ou códigos FIPE")
+    
+    # Exibir dica quando não há busca
+    elif not search_query and (not year_filter or year_filter == "Todos os anos"):
+        st.info("💡 **Dica:** Digite um termo de busca ou selecione um ano para começar")
+        
+        # Mostrar algumas estatísticas interessantes
+        st.subheader("📊 Resumo da Base")
+        col1, col2, col3, col4 = st.columns(4)
+        
+        with col1:
+            total_adas = (df['ADAS'] == 'Sim').sum()
+            st.metric("Veículos com ADAS", f"{total_adas:,}")
+        
+        with col2:
+            if 'Tipo de Regulagem' in df.columns:
+                dinamica = (df['Tipo de Regulagem'] == 'Dinâmica').sum()
+                st.metric("Calibração Dinâmica", f"{dinamica:,}")
+        
+        with col3:
+            if 'Tipo de Regulagem' in df.columns:
+                estatica = (df['Tipo de Regulagem'] == 'Estática').sum()
+                st.metric("Calibração Estática", f"{estatica:,}")
+        
+        with col4:
+            years_range = f"{df['VehicleModelYear'].min()}-{df['VehicleModelYear'].max()}"
+            st.metric("Faixa de Anos", years_range)
     
     # Footer
     st.markdown("---")
