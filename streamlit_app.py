@@ -411,25 +411,20 @@ def search_vehicles(query, df, year_filter=None):
             return []
     
     query = query.upper().strip()
-    results = []
+    
+    # SEMPRE eliminar duplicatas primeiro, independente do tipo de busca
+    unique_df = filtered_df.drop_duplicates(subset=['FipeID'], keep='first')
     
     # Busca por FIPE ID exato
     if query.isdigit():
-        fipe_matches = filtered_df[filtered_df['FipeID'].astype(str) == query]
+        fipe_matches = unique_df[unique_df['FipeID'].astype(str) == query]
         if not fipe_matches.empty:
-            # Eliminar duplicatas por FipeID para busca por código
-            unique_fipe = fipe_matches.drop_duplicates(subset=['FipeID'], keep='first')
-            return unique_fipe.to_dict('records')
+            return fipe_matches.to_dict('records')
     
     # Busca textual com score
-    seen_fipe_ids = set()  # Para controlar duplicatas
+    results = []
     
-    for _, row in filtered_df.iterrows():
-        # Verificar se já processamos este FIPE ID
-        fipe_id = row.get('FipeID')
-        if fipe_id in seen_fipe_ids:
-            continue
-        
+    for _, row in unique_df.iterrows():
         score = 0
         
         # Score por marca (peso maior)
@@ -452,7 +447,6 @@ def search_vehicles(query, df, year_filter=None):
             result = row.to_dict()
             result['search_score'] = score
             results.append(result)
-            seen_fipe_ids.add(fipe_id)  # Marcar como processado
     
     # Ordenar por relevância e limitar a 10
     return sorted(results, key=lambda x: x.get('search_score', 0), reverse=True)[:10]
