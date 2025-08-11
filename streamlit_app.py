@@ -115,6 +115,12 @@ BOSCH_CALIBRATION_LINKS = {
     },
     
     'BMW': {
+        'camera_frontal': [
+            {
+                'name': 'Calibração da câmera frontal BMW',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/496.pdf'
+            }
+        ],
         'radar_frontal': [
             {
                 'name': 'Calibração do radar frontal BMW/MINI',
@@ -124,6 +130,12 @@ BOSCH_CALIBRATION_LINKS = {
     },
     
     'MINI': {
+        'camera_frontal': [
+            {
+                'name': 'Calibração da câmera frontal MINI',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/496.pdf'
+            }
+        ],
         'radar_frontal': [
             {
                 'name': 'Calibração do radar frontal BMW/MINI',
@@ -191,7 +203,34 @@ BOSCH_CALIBRATION_LINKS = {
     }
 }
 
-def get_calibration_links(brand_name, vehicle_data):
+def get_specific_calibration_link(brand_name, calibration_type):
+    """Retorna link específico para um tipo de calibração"""
+    if not brand_name:
+        return None
+    
+    brand_upper = brand_name.upper().strip()
+    
+    if brand_upper not in BOSCH_CALIBRATION_LINKS:
+        return None
+    
+    brand_links = BOSCH_CALIBRATION_LINKS[brand_upper]
+    
+    # Mapear tipos de calibração
+    type_mapping = {
+        'camera_frontal': ['camera_frontal', 'camera_frontal_ar'],
+        'radar_frontal': ['radar_frontal'],
+        'camera_traseira': ['camera_traseira'],
+        'radar_traseiro': ['radar_traseiro'],
+        'camera_360': ['camera_360'],
+        'lidar': ['lidar']
+    }
+    
+    if calibration_type in type_mapping:
+        for link_type in type_mapping[calibration_type]:
+            if link_type in brand_links and brand_links[link_type]:
+                return brand_links[link_type][0]  # Retorna o primeiro link
+    
+    return None
     """Retorna links específicos de calibração baseado na marca e características do veículo"""
     if not brand_name:
         return []
@@ -495,17 +534,159 @@ def main():
                     
                     with col1:
                         st.write("**🎯 Características ADAS:**")
-                        features = [
-                            ('ADAS no Parabrisa', 'ADAS no Parabrisa'),
-                            ('ADAS no Parachoque', 'Adas no Parachoque'),
-                            ('Câmera Retrovisor', 'Camera no Retrovisor'),
-                            ('Faróis Matrix', 'Faróis Matrix')
-                        ]
+                    with col1:
+                        st.write("**🎯 Características ADAS:**")
                         
-                        for name, key in features:
-                            value = vehicle.get(key, 'N/A')
-                            icon = "✅" if value == "Sim" else "❌" if value == "Não" else "❓"
-                            st.write(f"• {name}: {icon}")
+                        # ADAS no Parabrisa com link integrado
+                        parabrisa_value = vehicle.get('ADAS no Parabrisa', 'N/A')
+                        icon_parabrisa = "✅" if parabrisa_value == "Sim" else "❌" if parabrisa_value == "Não" else "❓"
+                        
+                        col_char1, col_link1 = st.columns([2, 1])
+                        with col_char1:
+                            st.write(f"• ADAS no Parabrisa: {icon_parabrisa}")
+                        
+                        # Link para calibração da câmera frontal
+                        if parabrisa_value == "Sim":
+                            camera_link = get_specific_calibration_link(vehicle.get('BrandName', ''), 'camera_frontal')
+                            if camera_link:
+                                with col_link1:
+                                    st.markdown(f"""
+                                    <a href="{camera_link['link']}" target="_blank">
+                                        <button style="
+                                            background: linear-gradient(90deg, #28a745, #20c997);
+                                            color: white;
+                                            border: none;
+                                            padding: 4px 8px;
+                                            border-radius: 3px;
+                                            cursor: pointer;
+                                            font-size: 10px;
+                                            font-weight: bold;
+                                            width: 100%;
+                                        ">
+                                            📄 Câmera Frontal
+                                        </button>
+                                    </a>
+                                    """, unsafe_allow_html=True)
+                        
+                        # ADAS no Parachoque com link integrado
+                        parachoque_value = vehicle.get('Adas no Parachoque', 'N/A')
+                        icon_parachoque = "✅" if parachoque_value == "Sim" else "❌" if parachoque_value == "Não" else "❓"
+                        
+                        col_char2, col_link2 = st.columns([2, 1])
+                        with col_char2:
+                            st.write(f"• ADAS no Parachoque: {icon_parachoque}")
+                        
+                        # Link para calibração do radar frontal
+                        if parachoque_value == "Sim":
+                            radar_link = get_specific_calibration_link(vehicle.get('BrandName', ''), 'radar_frontal')
+                            if radar_link:
+                                with col_link2:
+                                    st.markdown(f"""
+                                    <a href="{radar_link['link']}" target="_blank">
+                                        <button style="
+                                            background: linear-gradient(90deg, #dc3545, #e74c3c);
+                                            color: white;
+                                            border: none;
+                                            padding: 4px 8px;
+                                            border-radius: 3px;
+                                            cursor: pointer;
+                                            font-size: 10px;
+                                            font-weight: bold;
+                                            width: 100%;
+                                        ">
+                                            📡 Radar Frontal
+                                        </button>
+                                    </a>
+                                    """, unsafe_allow_html=True)
+                        
+                        # Câmera Retrovisor com link integrado
+                        retrovisor_value = vehicle.get('Camera no Retrovisor', 'N/A')
+                        icon_retrovisor = "✅" if retrovisor_value == "Sim" else "❌" if retrovisor_value == "Não" else "❓"
+                        
+                        col_char3, col_link3 = st.columns([2, 1])
+                        with col_char3:
+                            st.write(f"• Câmera Retrovisor: {icon_retrovisor}")
+                        
+                        # Link para calibração da câmera traseira
+                        if retrovisor_value == "Sim":
+                            camera_tras_link = get_specific_calibration_link(vehicle.get('BrandName', ''), 'camera_traseira')
+                            if camera_tras_link:
+                                with col_link3:
+                                    st.markdown(f"""
+                                    <a href="{camera_tras_link['link']}" target="_blank">
+                                        <button style="
+                                            background: linear-gradient(90deg, #6f42c1, #8e44ad);
+                                            color: white;
+                                            border: none;
+                                            padding: 4px 8px;
+                                            border-radius: 3px;
+                                            cursor: pointer;
+                                            font-size: 10px;
+                                            font-weight: bold;
+                                            width: 100%;
+                                        ">
+                                            📹 Câm. Traseira
+                                        </button>
+                                    </a>
+                                    """, unsafe_allow_html=True)
+                        
+                        # Faróis Matrix
+                        matrix_value = vehicle.get('Faróis Matrix', 'N/A')
+                        icon_matrix = "✅" if matrix_value == "Sim" else "❌" if matrix_value == "Não" else "❓"
+                        st.write(f"• Faróis Matrix: {icon_matrix}")
+                        
+                        # Links especiais para Audi
+                        brand_name = vehicle.get('BrandName', '').upper()
+                        if brand_name == 'AUDI':
+                            # Câmera 360
+                            camera_360_link = get_specific_calibration_link(brand_name, 'camera_360')
+                            if camera_360_link:
+                                col_360_1, col_360_2 = st.columns([2, 1])
+                                with col_360_1:
+                                    st.write("• Câmera 360°: ✅")
+                                with col_360_2:
+                                    st.markdown(f"""
+                                    <a href="{camera_360_link['link']}" target="_blank">
+                                        <button style="
+                                            background: linear-gradient(90deg, #17a2b8, #138496);
+                                            color: white;
+                                            border: none;
+                                            padding: 4px 8px;
+                                            border-radius: 3px;
+                                            cursor: pointer;
+                                            font-size: 10px;
+                                            font-weight: bold;
+                                            width: 100%;
+                                        ">
+                                            🔄 Câm. 360°
+                                        </button>
+                                    </a>
+                                    """, unsafe_allow_html=True)
+                            
+                            # Lidar
+                            lidar_link = get_specific_calibration_link(brand_name, 'lidar')
+                            if lidar_link:
+                                col_lidar_1, col_lidar_2 = st.columns([2, 1])
+                                with col_lidar_1:
+                                    st.write("• Sistema Lidar: ✅")
+                                with col_lidar_2:
+                                    st.markdown(f"""
+                                    <a href="{lidar_link['link']}" target="_blank">
+                                        <button style="
+                                            background: linear-gradient(90deg, #fd7e14, #e55d00);
+                                            color: white;
+                                            border: none;
+                                            padding: 4px 8px;
+                                            border-radius: 3px;
+                                            cursor: pointer;
+                                            font-size: 10px;
+                                            font-weight: bold;
+                                            width: 100%;
+                                        ">
+                                            🌊 Lidar
+                                        </button>
+                                    </a>
+                                    """, unsafe_allow_html=True)
                     
                     with col2:
                         st.write("**⚙️ Informações Técnicas:**")
@@ -514,100 +695,23 @@ def main():
                         if vehicle.get('Abreviação de descrição'):
                             st.write(f"• **Modelo:** {vehicle['Abreviação de descrição']}")
                     
-                    # Links específicos de calibração para o piloto
+                    # Aviso sobre piloto e links disponíveis
                     brand_name = vehicle.get('BrandName', '')
-                    calibration_links = get_calibration_links(brand_name, vehicle)
-                    
-                    if calibration_links:
+                    if brand_name.upper() in ['ALFA ROMEO', 'AUDI', 'BENTLEY', 'BMW', 'MINI', 'MERCEDES', 'MERCEDES-BENZ']:
                         st.success(f"""
-                        🎯 **Links Específicos de Calibração para {brand_name}:**
+                        🎯 **{brand_name} - Piloto Ativo:** Links específicos de calibração integrados acima conforme características detectadas
                         """)
-                        
-                        # Organizar links por categoria
-                        st.markdown("### 📋 **Instruções Específicas Disponíveis:**")
-                        
-                        for i, link_data in enumerate(calibration_links):
-                            col_link1, col_link2 = st.columns([3, 1])
-                            
-                            with col_link1:
-                                st.markdown(f"""
-                                **📖 {link_data['name']}**  
-                                *Compatível com as características detectadas neste veículo*
-                                """)
-                            
-                            with col_link2:
-                                st.markdown(f"""
-                                <a href="{link_data['link']}" target="_blank">
-                                    <button style="
-                                        background: linear-gradient(90deg, #dc3545, #c82333);
-                                        color: white;
-                                        border: none;
-                                        padding: 8px 16px;
-                                        border-radius: 5px;
-                                        cursor: pointer;
-                                        font-weight: bold;
-                                        width: 100%;
-                                        font-size: 12px;
-                                    ">
-                                        📄 Abrir PDF
-                                    </button>
-                                </a>
-                                """, unsafe_allow_html=True)
-                            
-                            st.markdown("---")
-                        
-                        # Resumo das características que geraram os links
-                        st.info(f"""
-                        ✅ **Links baseados nas características detectadas:**
-                        • ADAS no Parabrisa: {vehicle.get('ADAS no Parabrisa', 'N/A')}
-                        • ADAS no Parachoque: {vehicle.get('Adas no Parachoque', 'N/A')}
-                        • Câmera Retrovisor: {vehicle.get('Camera no Retrovisor', 'N/A')}
-                        • Faróis Matrix: {vehicle.get('Faróis Matrix', 'N/A')}
-                        """)
-                        
-                        # Aviso importante
-                        st.warning("""
-                        ⚠️ **IMPORTANTE - PILOTO ATIVO:**
-                        • Estes links são específicos para **{brand_name}**
-                        • Sempre verifique a compatibilidade exata do modelo
-                        • Use apenas equipamento certificado (DAS 3000, etc.)
-                        • Siga rigorosamente as instruções do PDF
-                        """.format(brand_name=brand_name))
-                    
                     else:
-                        # Para marcas não cobertas pelo piloto
-                        if brand_name.upper() in ['ALFA ROMEO', 'AUDI', 'BENTLEY', 'BMW', 'MINI', 'MERCEDES', 'MERCEDES-BENZ']:
-                            st.warning(f"""
-                            🔧 **{brand_name} - Piloto em Desenvolvimento**
-                            • Esta marca está em nossa base piloto
-                            • Links específicos serão exibidos conforme características detectadas
-                            • Para este veículo específico, consulte manual geral
-                            """)
-                        else:
-                            st.info(f"""
-                            📚 **{brand_name} - Consulta Manual Necessária**
-                            • Esta marca ainda não está no piloto de links específicos
-                            • Consulte a documentação geral da Bosch
-                            • Em breve teremos links específicos para mais marcas
-                            """)
-                        
-                        # Link para documentação geral
-                        st.markdown(f"""
-                        <a href="https://help.boschdiagnostics.com/DAS3000/" target="_blank">
-                            <button style="
-                                background: linear-gradient(90deg, #007bff, #0056b3);
-                                color: white;
-                                border: none;
-                                padding: 10px 20px;
-                                border-radius: 5px;
-                                cursor: pointer;
-                                font-weight: bold;
-                                width: 100%;
-                            ">
-                                📖 Acessar Documentação Geral Bosch
-                            </button>
-                        </a>
-                        """, unsafe_allow_html=True)
+                        st.info(f"""
+                        📚 **{brand_name}:** Consulte documentação geral - https://help.boschdiagnostics.com/DAS3000/
+                        """)
+                    
+                    st.markdown("""
+                    **⚠️ Importante:**
+                    • Use apenas equipamento certificado (DAS 3000, VCDS, ODIS)
+                    • Sempre siga as instruções do PDF específico
+                    • Verifique compatibilidade antes de iniciar
+                    """)
                 
                 st.markdown("---")
         
