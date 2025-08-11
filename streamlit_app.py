@@ -22,6 +22,25 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+# Função para criar dados de demonstração
+@st.cache_data
+def create_demo_data():
+    return pd.DataFrame({
+        'FipeID': [92983, 95432, 87621, 73291, 84512],
+        'VehicleModelYear': [2024, 2023, 2024, 2025, 2023],
+        'BrandName': ['BMW', 'VOLKSWAGEN', 'MERCEDES-BENZ', 'AUDI', 'TOYOTA'],
+        'VehicleName': [
+            '118i M Sport 1.5 TB 12V Aut. 5p',
+            'Polo TSI 1.0 200 Aut. 5p',
+            'A-Class A200 1.3 TB Aut.',
+            'A3 Sedan 1.4 TFSI Aut.',
+            'Corolla 2.0 XEi Aut.'
+        ],
+        'Abreviacao': ['118i M Sport', 'Polo TSI', 'A200', 'A3 Sedan', 'Corolla XEi'],
+        'ADAS': ['Sim', 'Sim', 'Sim', 'Sim', 'Sim'],
+        'TipoRegulagem': ['Dinamica', 'Estatica', 'Dinamica', 'Estatica/Dinamica', 'Dinamica']
+    })
+
 # Header principal
 st.markdown("""
 <div class="main-header">
@@ -30,11 +49,19 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# Teste de funcionamento
-st.subheader("🔍 Teste de Funcionamento")
-st.write("Se você vê isso, a estrutura básica está funcionando!")
+# Carregar dados
+df = create_demo_data()
 
-if st.button("Teste Estrutura"):
-    st.success("✅ Estrutura funcionando!")
-
-st.write(f"**Versão do Streamlit:** {st.__version__}")
+# Sidebar
+with st.sidebar:
+    st.header("⚙️ Configurações")
+    st.markdown("---")
+    
+    st.subheader("📊 Estatísticas")
+    total_vehicles = len(df)
+    vehicles_with_adas = len(df[df['ADAS'] == 'Sim'])
+    unique_brands = df['BrandName'].nunique()
+    
+    st.metric("Total de Veículos", total_vehicles)
+    st.metric("Veículos com ADAS", vehicles_with_adas)
+    st.metric("Marcas Únicas", unique_brands)
