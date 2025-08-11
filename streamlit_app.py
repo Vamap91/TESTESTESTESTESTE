@@ -296,7 +296,7 @@ if not df.empty and data_source == "arquivo_local":
 st.markdown("---")
 st.markdown("""
 <div style="text-align: center; color: #666; padding: 1rem;">
-    <p>🔧 <strong>Sistema ADAS Pro</strong> | Dados técnicos baseados em informações oficiais</p>
+    <p>🔧 <strong>Sistema ADAS Desenvolvido pela Carglass Pro</strong> | Dados técnicos baseados em informações oficiais</p>
     <p>⚠️ Sempre consulte a documentação oficial do fabricante para procedimentos de calibração</p>
 </div>
 """, unsafe_allow_html=True)
