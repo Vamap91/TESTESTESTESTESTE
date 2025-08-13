@@ -800,37 +800,23 @@ def main():
     
     # Sidebar com estatísticas dinâmicas
     with st.sidebar:
-        st.header("📊 Estatísticas da Base")
+        st.header("📊 Estatísticas")
         
         if not df.empty:
-            # Métricas baseadas nos dados reais carregados
-            st.metric("Total de Veículos", f"{len(df):,}")
+            # CAMPO 1: Total de Veículos - Contagem distinta de FipeID
+            if 'FipeID' in df.columns:
+                total_vehicles = df['FipeID'].nunique()
+                st.metric("Total de Veículos", f"{total_vehicles:,}")
             
-            # Contar veículos com ADAS
-            if 'ADAS' in df.columns:
-                adas_count = (df['ADAS'] == 'Sim').sum()
-                adas_percent = (adas_count / len(df) * 100) if len(df) > 0 else 0
-                st.metric("Veículos com ADAS", f"{adas_count:,} ({adas_percent:.1f}%)")
+            # CAMPO 2: Veículos com ADAS - Contagem distinta de FipeID onde ADAS = 'Sim'
+            if 'ADAS' in df.columns and 'FipeID' in df.columns:
+                adas_vehicles = df[df['ADAS'] == 'Sim']['FipeID'].nunique()
+                st.metric("Veículos com ADAS", f"{adas_vehicles:,}")
             
-            # Contar marcas únicas
+            # Marcas Disponíveis
             if 'BrandName' in df.columns:
                 unique_brands = df['BrandName'].nunique()
                 st.metric("Marcas Disponíveis", unique_brands)
-            
-            # Range de anos
-            if 'VehicleModelYear' in df.columns:
-                min_year = df['VehicleModelYear'].min()
-                max_year = df['VehicleModelYear'].max()
-                st.metric("Faixa de Anos", f"{min_year}-{max_year}")
-            
-            st.markdown("---")
-            
-            # Top 5 marcas (apenas se há dados suficientes)
-            if 'BrandName' in df.columns and len(df) > 5:
-                st.write("**🏆 Top 5 Marcas:**")
-                top_brands = df['BrandName'].value_counts().head(5)
-                for i, (brand, count) in enumerate(top_brands.items(), 1):
-                    st.write(f"{i}. {brand}: {count:,}")
         else:
             st.error("❌ Nenhum dado carregado")
     
@@ -870,18 +856,11 @@ def main():
     # Upload opcional na sidebar
     with st.sidebar:
         st.markdown("---")
-        st.subheader("📁 Upload Personalizado")
         uploaded_file = st.file_uploader(
-            "Carregar Base Personalizada:",
+            "📁 Carregar Base Personalizada",
             type=['xlsx', 'csv'],
-            help="Formatos suportados: XLSX (recomendado) ou CSV"
+            help="Opcional: XLSX (recomendado) ou CSV"
         )
-        
-        if uploaded_file:
-            if st.button("🔄 Recarregar com Novo Arquivo"):
-                # Recarregar dados com arquivo enviado
-                df, status_message, total_records = load_vehicle_data(uploaded_file)
-                st.experimental_rerun()
     
     # Processar busca
     if search_button or search_query or (year_filter and year_filter != "Todos os anos"):
@@ -1120,13 +1099,15 @@ def main():
             col1, col2, col3, col4 = st.columns(4)
             
             with col1:
-                if 'ADAS' in df.columns:
-                    adas_count = (df['ADAS'] == 'Sim').sum()
-                    st.metric("Veículos com ADAS", f"{adas_count:,}")
+                if 'FipeID' in df.columns:
+                    total_vehicles = df['FipeID'].nunique()
+                    st.metric("Total Veículos", f"{total_vehicles:,}")
             
             with col2:
-                if 'ADAS' in df.columns:
-                    adas_percent = (adas_count / len(df) * 100) if len(df) > 0 else 0
+                if 'ADAS' in df.columns and 'FipeID' in df.columns:
+                    adas_vehicles = df[df['ADAS'] == 'Sim']['FipeID'].nunique()
+                    total_vehicles = df['FipeID'].nunique()
+                    adas_percent = (adas_vehicles / total_vehicles * 100) if total_vehicles > 0 else 0
                     st.metric("Percentual ADAS", f"{adas_percent:.1f}%")
             
             with col3:
