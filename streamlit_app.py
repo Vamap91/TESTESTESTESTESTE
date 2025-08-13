@@ -649,47 +649,67 @@ def get_specific_calibration_link(brand_name, calibration_type):
     return None
 
 @st.cache_data
-def load_vehicle_data():
-    """Carrega dados com fallback para demo se CSV não existir"""
+def load_vehicle_data(uploaded_file=None):
+    """Carrega dados com suporte prioritário ao XLSX e fallback para CSV"""
     
-    # Tentar carregar CSV real primeiro
-    if os.path.exists('processed_data.csv'):
-        try:
+    try:
+        if uploaded_file is not None:
+            # Detectar formato do arquivo enviado
+            if uploaded_file.name.endswith('.xlsx'):
+                df = pd.read_excel(uploaded_file, engine='openpyxl')
+                return df, f"✅ Arquivo XLSX enviado carregado: {len(df):,} veículos", len(df)
+            elif uploaded_file.name.endswith(('.csv', '.txt')):
+                df = pd.read_csv(uploaded_file, sep=';', encoding='utf-8')
+                return df, f"✅ Arquivo CSV enviado carregado: {len(df):,} veículos", len(df)
+            else:
+                st.error("⚠️ Formato não suportado. Use XLSX ou CSV.")
+                return pd.DataFrame(), "erro_formato", 0
+        
+        # Prioridade 1: Tentar carregar XLSX (dados mais limpos)
+        if os.path.exists('processed_data.xlsx'):
+            df = pd.read_excel('processed_data.xlsx', engine='openpyxl')
+            return df, f"✅ Base XLSX carregada: {len(df):,} veículos", len(df)
+        
+        # Prioridade 2: Fallback para CSV se XLSX não existir
+        elif os.path.exists('processed_data.csv'):
             df = pd.read_csv('processed_data.csv', sep=';', encoding='utf-8')
-            return df, f"✅ Base real carregada: 1.393 veículos"
-        except Exception as e:
-            st.error(f"Erro ao ler CSV: {e}")
-    
-    # Fallback: dados de demonstração
-    demo_data = {
-        'FipeID': [92983, 95432, 87654, 76543, 65432],
-        'VehicleModelYear': [2024, 2023, 2024, 2023, 2022],
-        'BrandName': ['BMW', 'VOLKSWAGEN', 'MERCEDES-BENZ', 'AUDI', 'VOLVO'],
-        'VehicleName': [
-            '118i M Sport 1.5 TB 12V Aut. 5p',
-            'Polo TSI 1.0 200 Aut. 5p', 
-            'C-Class C200 2.0 TB Aut.',
-            'A3 Sedan 1.4 TFSI Aut.',
-            'XC60 T5 2.0 TB Aut. AWD'
-        ],
-        'Abreviação de descrição': [
-            'BMW 118i M Sport',
-            'Polo TSI 200',
-            'Mercedes C200',
-            'Audi A3 Sedan',
-            'Volvo XC60 T5'
-        ],
-        'ADAS': ['Sim', 'Sim', 'Sim', 'Sim', 'Sim'],
-        'Opcional Parabrisa': ['Sim', 'Não', 'Sim', 'Não', 'Sim'],
-        'ADAS no Parabrisa': ['Sim', 'Não', 'Sim', 'Sim', 'Sim'],
-        'Adas no Parachoque': ['Sim', 'Sim', 'Não', 'Sim', 'Sim'],
-        'Tipo de Regulagem': ['Dinâmica', 'Estática', 'Dinâmica', 'Estática', 'Dinâmica'],
-        'Camera no Retrovisor': ['Sim', 'Não', 'Sim', 'Sim', 'Sim'],
-        'Faróis Matrix': ['Sim', 'Não', 'Sim', 'Sim', 'Não']
-    }
-    
-    df = pd.DataFrame(demo_data)
-    return df, "⚠️ Usando dados de demonstração (5 veículos)"
+            return df, f"✅ Base CSV carregada: {len(df):,} veículos", len(df)
+        
+        # Fallback final: dados de demonstração
+        else:
+            demo_data = {
+                'FipeID': [92983, 95432, 87654, 76543, 65432],
+                'VehicleModelYear': [2024, 2023, 2024, 2023, 2022],
+                'BrandName': ['BMW', 'VOLKSWAGEN', 'MERCEDES-BENZ', 'AUDI', 'VOLVO'],
+                'VehicleName': [
+                    '118i M Sport 1.5 TB 12V Aut. 5p',
+                    'Polo TSI 1.0 200 Aut. 5p', 
+                    'C-Class C200 2.0 TB Aut.',
+                    'A3 Sedan 1.4 TFSI Aut.',
+                    'XC60 T5 2.0 TB Aut. AWD'
+                ],
+                'Abreviação de descrição': [
+                    'BMW 118i M Sport',
+                    'Polo TSI 200',
+                    'Mercedes C200',
+                    'Audi A3 Sedan',
+                    'Volvo XC60 T5'
+                ],
+                'ADAS': ['Sim', 'Sim', 'Sim', 'Sim', 'Sim'],
+                'Opcional Parabrisa': ['Sim', 'Não', 'Sim', 'Não', 'Sim'],
+                'ADAS no Parabrisa': ['Sim', 'Não', 'Sim', 'Sim', 'Sim'],
+                'Adas no Parachoque': ['Sim', 'Sim', 'Não', 'Sim', 'Sim'],
+                'Tipo de Regulagem': ['Dinâmica', 'Estática', 'Dinâmica', 'Estática', 'Dinâmica'],
+                'Camera no Retrovisor': ['Sim', 'Não', 'Sim', 'Sim', 'Sim'],
+                'Faróis Matrix': ['Sim', 'Não', 'Sim', 'Sim', 'Não']
+            }
+            
+            df = pd.DataFrame(demo_data)
+            return df, "⚠️ Usando dados de demonstração (5 veículos)", len(df)
+        
+    except Exception as e:
+        st.error(f"❌ Erro ao carregar dados: {str(e)}")
+        return pd.DataFrame(), f"erro: {str(e)}", 0
 
 def search_vehicles(query, df, year_filter=None):
     """Busca inteligente nos veículos com filtro de ano e eliminação de duplicatas"""
@@ -766,23 +786,56 @@ def main():
     """, unsafe_allow_html=True)
     
     # Carregar dados
-    df, status_message = load_vehicle_data()
+    df, status_message, total_records = load_vehicle_data()
     
-    # Mostrar status com valores corretos
-    if "Base real carregada" in status_message:
-        st.info("✅ Base real carregada: 1.393 veículos")
+    # Mostrar status dos dados carregados
+    if "XLSX carregada" in status_message:
+        st.success(status_message + " 📊 (Dados limpos)")
+    elif "CSV carregada" in status_message:
+        st.info(status_message + " 📋 (Fallback)")
+    elif "demonstração" in status_message:
+        st.warning(status_message)
     else:
-        st.info(status_message)
+        st.error(status_message)
     
-    # Sidebar com estatísticas
+    # Sidebar com estatísticas dinâmicas
     with st.sidebar:
-        st.header("📊 Estatísticas")
-        st.metric("Total de Veículos", "5.438")
-        st.metric("Veículos com ADAS", "1.393")
-        st.metric("Marcas Disponíveis", "33")
+        st.header("📊 Estatísticas da Base")
+        
+        if not df.empty:
+            # Métricas baseadas nos dados reais carregados
+            st.metric("Total de Veículos", f"{len(df):,}")
+            
+            # Contar veículos com ADAS
+            if 'ADAS' in df.columns:
+                adas_count = (df['ADAS'] == 'Sim').sum()
+                adas_percent = (adas_count / len(df) * 100) if len(df) > 0 else 0
+                st.metric("Veículos com ADAS", f"{adas_count:,} ({adas_percent:.1f}%)")
+            
+            # Contar marcas únicas
+            if 'BrandName' in df.columns:
+                unique_brands = df['BrandName'].nunique()
+                st.metric("Marcas Disponíveis", unique_brands)
+            
+            # Range de anos
+            if 'VehicleModelYear' in df.columns:
+                min_year = df['VehicleModelYear'].min()
+                max_year = df['VehicleModelYear'].max()
+                st.metric("Faixa de Anos", f"{min_year}-{max_year}")
+            
+            st.markdown("---")
+            
+            # Top 5 marcas (apenas se há dados suficientes)
+            if 'BrandName' in df.columns and len(df) > 5:
+                st.write("**🏆 Top 5 Marcas:**")
+                top_brands = df['BrandName'].value_counts().head(5)
+                for i, (brand, count) in enumerate(top_brands.items(), 1):
+                    st.write(f"{i}. {brand}: {count:,}")
+        else:
+            st.error("❌ Nenhum dado carregado")
     
     # Interface de busca
-    st.subheader("🔍 Buscar Veículo")
+    st.subheader("🔍 Buscar Veículo na Base ADAS")
     
     # Filtros de busca
     col1, col2, col3 = st.columns([3, 1.5, 1])
@@ -790,31 +843,52 @@ def main():
     with col1:
         search_query = st.text_input(
             "Digite para buscar:",
-            placeholder="Ex: BMW, Polo, 92983",
+            placeholder="Ex: BMW, Polo, Mercedes, 92983",
             help="Busque por marca, modelo ou código FIPE"
         )
     
     with col2:
-        # Filtro de ano
-        years_available = sorted(df['VehicleModelYear'].unique(), reverse=True)
-        year_filter = st.selectbox(
-            "📅 Filtrar por Ano:",
-            options=["Todos os anos"] + [str(year) for year in years_available],
-            help="Selecione um ano específico"
-        )
+        # Filtro de ano (baseado nos dados reais)
+        if 'VehicleModelYear' in df.columns and not df.empty:
+            years_available = sorted(df['VehicleModelYear'].unique(), reverse=True)
+            year_filter = st.selectbox(
+                "📅 Filtrar por Ano:",
+                options=["Todos os anos"] + [str(year) for year in years_available],
+                help="Selecione um ano específico"
+            )
+        else:
+            year_filter = st.selectbox(
+                "📅 Filtrar por Ano:",
+                options=["Todos os anos"],
+                disabled=True,
+                help="Filtro indisponível - dados não carregados"
+            )
     
     with col3:
         search_button = st.button("🔍 Buscar", type="primary")
     
+    # Upload opcional na sidebar
+    with st.sidebar:
+        st.markdown("---")
+        st.subheader("📁 Upload Personalizado")
+        uploaded_file = st.file_uploader(
+            "Carregar Base Personalizada:",
+            type=['xlsx', 'csv'],
+            help="Formatos suportados: XLSX (recomendado) ou CSV"
+        )
+        
+        if uploaded_file:
+            if st.button("🔄 Recarregar com Novo Arquivo"):
+                # Recarregar dados com arquivo enviado
+                df, status_message, total_records = load_vehicle_data(uploaded_file)
+                st.experimental_rerun()
+    
     # Processar busca
     if search_button or search_query or (year_filter and year_filter != "Todos os anos"):
-        with st.spinner("Buscando..."):
+        with st.spinner("🔄 Buscando na base de dados..."):
             results = search_vehicles(search_query, df, year_filter)
         
         if results:
-            # Contar resultados únicos
-            unique_fipe_ids = len(set(r.get('FipeID') for r in results))
-            
             # Mostrar filtros aplicados
             filters_applied = []
             if search_query:
@@ -823,12 +897,9 @@ def main():
                 filters_applied.append(f"Ano: {year_filter}")
             
             filter_text = " | ".join(filters_applied) if filters_applied else "Todos"
-            st.success(f"✅ Encontrados {len(results)} resultado(s) único(s) - Filtros: {filter_text}")
+            st.success(f"✅ Encontrados {len(results)} resultado(s) - Filtros: {filter_text}")
             
-            # Aviso sobre eliminação de duplicatas se aplicável
-            if len(results) < 10 and search_query and search_query.isdigit():
-                st.info("💡 Duplicatas eliminadas - mostrando apenas veículos únicos por código FIPE")
-            
+            # Processar e exibir cada veículo
             for vehicle in results:
                 # Card do veículo
                 st.markdown(f"""
@@ -841,7 +912,7 @@ def main():
                 </div>
                 """, unsafe_allow_html=True)
                 
-                # Detalhes ADAS
+                # Detalhes ADAS se disponível
                 if vehicle.get('ADAS') == 'Sim':
                     col1, col2 = st.columns(2)
                     
@@ -1043,30 +1114,42 @@ def main():
     elif not search_query and (not year_filter or year_filter == "Todos os anos"):
         st.info("💡 **Dica:** Digite um termo de busca ou selecione um ano para começar")
         
-        # Mostrar algumas estatísticas interessantes
-        st.subheader("📊 Resumo da Base")
-        col1, col2, col3, col4 = st.columns(4)
-        
-        with col1:
-            st.metric("Veículos com ADAS", "1.393")
-        
-        with col2:
-            st.metric("Veículos com ADAS %", "25,6%")
-        
-        with col3:
-            st.metric("Marcas Disponíveis", "33")
-        
-        with col4:
-            st.metric("Faixa de Anos", "2001-2026")
+        # Mostrar estatísticas interessantes se há dados
+        if not df.empty:
+            st.subheader("📊 Resumo da Base Carregada")
+            col1, col2, col3, col4 = st.columns(4)
+            
+            with col1:
+                if 'ADAS' in df.columns:
+                    adas_count = (df['ADAS'] == 'Sim').sum()
+                    st.metric("Veículos com ADAS", f"{adas_count:,}")
+            
+            with col2:
+                if 'ADAS' in df.columns:
+                    adas_percent = (adas_count / len(df) * 100) if len(df) > 0 else 0
+                    st.metric("Percentual ADAS", f"{adas_percent:.1f}%")
+            
+            with col3:
+                if 'BrandName' in df.columns:
+                    unique_brands = df['BrandName'].nunique()
+                    st.metric("Marcas Únicas", unique_brands)
+            
+            with col4:
+                if 'VehicleModelYear' in df.columns:
+                    min_year = df['VehicleModelYear'].min()
+                    max_year = df['VehicleModelYear'].max()
+                    st.metric("Range Anos", f"{max_year-min_year+1}")
     
-    # Footer
+    # Footer informativo
     st.markdown("---")
     st.markdown("""
-    <div style="text-align: center; color: #666;">
-        <p>🔧 Sistema ADAS Pro | ⚠️ Sempre consulte documentação oficial para calibração</p>
+    <div style="text-align: center; color: #666; padding: 1rem; background: #f8f9fa; border-radius: 8px;">
+        <p>🔧 <strong>Sistema ADAS Pro</strong> | Desenvolvido para profissionais automotivos</p>
+        <p>⚠️ <strong>Importante:</strong> Sempre consulte documentação oficial para procedimentos de calibração</p>
+        <p>📊 Suporte: XLSX (recomendado), CSV | 🔗 Links diretos para documentação Bosch</p>
     </div>
     """, unsafe_allow_html=True)
 
-# Executar app
+# Executar aplicação
 if __name__ == "__main__":
     main()
