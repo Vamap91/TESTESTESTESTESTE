@@ -1120,8 +1120,7 @@ def main():
     st.markdown("""
     <div style="text-align: center; color: #666; padding: 1rem; background: #f8f9fa; border-radius: 8px;">
         <p>🔧 <strong>Sistema ADAS Pro</strong> | Desenvolvido para profissionais automotivos</p>
-        <p>⚠️ <strong>Importante:</strong> Sempre consulte documentação oficial para procedimentos de calibração</p>
-        <p>📊 Suporte: XLSX (recomendado), CSV | 🔗 Links diretos para documentação Bosch</p>
+        <p>⚠️ <strong>Importante:</strong> Sempre consulte documentação oficial para procedimentos de calibração</p>   
     </div>
     """, unsafe_allow_html=True)
 
