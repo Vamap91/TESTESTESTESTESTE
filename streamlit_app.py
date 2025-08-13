@@ -668,7 +668,7 @@ def load_vehicle_data(uploaded_file=None):
         # Prioridade 1: Tentar carregar XLSX (dados mais limpos)
         if os.path.exists('processed_data.xlsx'):
             df = pd.read_excel('processed_data.xlsx', engine='openpyxl')
-            return df, f"✅ Base XLSX carregada: {len(df):,} veículos", len(df)
+            return df, f"✅ Base carregada: {len(df):,} veículos", len(df)
         
         # Prioridade 2: Fallback para CSV se XLSX não existir
         elif os.path.exists('processed_data.csv'):
