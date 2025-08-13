@@ -776,8 +776,8 @@ def main():
     # Sidebar com estatísticas
     with st.sidebar:
         st.header("📊 Estatísticas")
-        st.metric("Total de Veículos", "65.735")
-        st.metric("Veículos com ADAS", "65.735")
+        st.metric("Total de Veículos", "5.438")
+        st.metric("Veículos com ADAS", "1.393")
         st.metric("Marcas Disponíveis", "33")
     
     # Interface de busca
