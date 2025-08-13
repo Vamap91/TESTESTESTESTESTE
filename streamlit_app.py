@@ -680,6 +680,7 @@ def load_vehicle_data():
             'Volvo XC60 T5'
         ],
         'ADAS': ['Sim', 'Sim', 'Sim', 'Sim', 'Sim'],
+        'Opcional Parabrisa': ['Sim', 'Não', 'Sim', 'Não', 'Sim'],
         'ADAS no Parabrisa': ['Sim', 'Não', 'Sim', 'Sim', 'Sim'],
         'Adas no Parachoque': ['Sim', 'Sim', 'Não', 'Sim', 'Sim'],
         'Tipo de Regulagem': ['Dinâmica', 'Estática', 'Dinâmica', 'Estática', 'Dinâmica'],
@@ -835,7 +836,8 @@ def main():
                     <h3>🚗 {vehicle.get('BrandName', 'N/A')} - {vehicle.get('VehicleName', 'N/A')}</h3>
                     <p><strong>Ano:</strong> {vehicle.get('VehicleModelYear', 'N/A')} | 
                        <strong>FIPE:</strong> {vehicle.get('FipeID', 'N/A')} | 
-                       <strong>ADAS:</strong> {'✅' if vehicle.get('ADAS') == 'Sim' else '❌'}</p>
+                       <strong>ADAS:</strong> {'✅' if vehicle.get('ADAS') == 'Sim' else '❌'} |
+                       <strong>Opcional Parabrisa:</strong> {'✅ SIM' if vehicle.get('Opcional Parabrisa') == 'Sim' else '❌ NÃO' if vehicle.get('Opcional Parabrisa') == 'Não' else '❓ N/A'}</p>
                 </div>
                 """, unsafe_allow_html=True)
                 
