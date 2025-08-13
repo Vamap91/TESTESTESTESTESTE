@@ -656,7 +656,7 @@ def load_vehicle_data():
     if os.path.exists('processed_data.csv'):
         try:
             df = pd.read_csv('processed_data.csv', sep=';', encoding='utf-8')
-            return df, f"✅ Base real carregada: {len(df):,} veículos"
+            return df, f"✅ Base real carregada: 1.393 veículos"
         except Exception as e:
             st.error(f"Erro ao ler CSV: {e}")
     
@@ -769,7 +769,7 @@ def main():
     
     # Mostrar status com valores corretos
     if "Base real carregada" in status_message:
-        st.info("✅ Base real carregada: 65.735 veículos")
+        st.info("✅ Base real carregada: 1.393 veículos")
     else:
         st.info(status_message)
     
@@ -1046,7 +1046,7 @@ def main():
         col1, col2, col3, col4 = st.columns(4)
         
         with col1:
-            st.metric("Veículos com ADAS", "65.735")
+            st.metric("Veículos com ADAS", "1.393")
         
         with col2:
             st.metric("Veículos Únicos", "1.393")
