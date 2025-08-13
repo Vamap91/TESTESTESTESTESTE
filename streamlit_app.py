@@ -781,7 +781,7 @@ def main():
     st.markdown("""
     <div class="main-header">
         <h1>🔧 Sistema Inteligente de Calibração ADAS</h1>
-        <p>Plataforma Profissional para Consulta de Sistemas ADAS</p>
+        <p>Plataforma Profissional para Consulta de Sistemas ADAS - Criada pela Carglass</p>
     </div>
     """, unsafe_allow_html=True)
     
