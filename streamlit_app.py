@@ -650,7 +650,7 @@ def get_specific_calibration_link(brand_name, calibration_type):
 
 @st.cache_data
 def load_vehicle_data(uploaded_file=None):
-    """Desenvolvido por Vinicius Paschoa"""
+    """Carrega dados com suporte prioritário ao XLSX e fallback para CSV"""
     
     try:
         if uploaded_file is not None:
@@ -853,14 +853,8 @@ def main():
     with col3:
         search_button = st.button("🔍 Buscar", type="primary")
     
-    # Upload opcional na sidebar
-    with st.sidebar:
-        st.markdown("---")
-        uploaded_file = st.file_uploader(
-            "📁 Carregar Base Personalizada",
-            type=['xlsx', 'csv'],
-            help="Opcional: XLSX (recomendado) ou CSV"
-        )
+    # Remover upload - não será utilizado
+    uploaded_file = None
     
     # Processar busca
     if search_button or search_query or (year_filter and year_filter != "Todos os anos"):
