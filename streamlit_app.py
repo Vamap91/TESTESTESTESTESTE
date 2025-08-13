@@ -1049,7 +1049,7 @@ def main():
             st.metric("Veículos com ADAS", "1.393")
         
         with col2:
-            st.metric("Veículos Únicos", "1.393")
+            st.metric("Veículos com ADAS %", "25,6%")
         
         with col3:
             st.metric("Marcas Disponíveis", "33")
