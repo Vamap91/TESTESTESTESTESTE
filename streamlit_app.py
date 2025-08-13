@@ -9,7 +9,7 @@ st.set_page_config(
     layout="wide"
 )
 
-# CSS Simplificado
+# CSS básico
 st.markdown("""
 <style>
     .main-header {
@@ -200,6 +200,422 @@ BOSCH_CALIBRATION_LINKS = {
                 'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/508.pdf'
             }
         ]
+    },
+    
+    'CITROEN': {
+        'camera_frontal': [
+            {
+                'name': 'Calibração da câmera frontal (Opção 1)',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/419.pdf'
+            },
+            {
+                'name': 'Calibração da câmera frontal (Opção 2)',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/368.pdf'
+            }
+        ]
+    },
+    
+    'CUPRA': {
+        'camera_frontal': [
+            {
+                'name': 'Calibração da câmera frontal (Opção 1)',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/546.pdf'
+            },
+            {
+                'name': 'Calibração da câmera frontal (Opção 2)',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/547.pdf'
+            }
+        ],
+        'radar_frontal': [
+            {
+                'name': 'Calibração do radar frontal',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/438.pdf'
+            }
+        ],
+        'camera_traseira': [
+            {
+                'name': 'Calibração da câmera traseira',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/558.pdf'
+            }
+        ]
+    },
+    
+    'DAIHATSU': {
+        'camera_frontal': [
+            {
+                'name': 'Calibração da câmera frontal (Opção 1)',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/504.pdf'
+            },
+            {
+                'name': 'Calibração da câmera frontal (Opção 2)',
+                'link': 'http://mediathek.bosch-automotive.com/files/common/documents/1689/989507.pdf'
+            }
+        ]
+    },
+    
+    'FIAT': {
+        'camera_frontal': [
+            {
+                'name': 'Calibração da câmera frontal (Opção 1)',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/420.pdf'
+            },
+            {
+                'name': 'Calibração da câmera frontal (Opção 2)',
+                'link': 'http://mediathek.bosch-automotive.com/files/common/documents/1690/386068.pdf'
+            }
+        ],
+        'radar_frontal': [
+            {
+                'name': 'Calibração do radar frontal',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/438.pdf'
+            }
+        ]
+    },
+    
+    'JEEP': {
+        'camera_frontal': [
+            {
+                'name': 'Calibração da câmera frontal (Opção 1)',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/420.pdf'
+            },
+            {
+                'name': 'Calibração da câmera frontal (Opção 2)',
+                'link': 'http://mediathek.bosch-automotive.com/files/common/documents/1690/386068.pdf'
+            }
+        ],
+        'radar_frontal': [
+            {
+                'name': 'Calibração do radar frontal',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/438.pdf'
+            }
+        ]
+    },
+    
+    'FORD': {
+        'camera_frontal': [
+            {
+                'name': 'Calibração da câmera frontal',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/672.pdf'
+            }
+        ],
+        'camera_traseira': [
+            {
+                'name': 'Calibração da câmera traseira',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/673.pdf'
+            }
+        ]
+    },
+    
+    'HONDA': {
+        'camera_frontal': [
+            {
+                'name': 'Calibração da câmera frontal (Opção 1)',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/421.pdf'
+            },
+            {
+                'name': 'Calibração da câmera frontal (Opção 2)',
+                'link': 'http://mediathek.bosch-automotive.com/files/common/documents/1690/386069.pdf'
+            }
+        ],
+        'radar_frontal': [
+            {
+                'name': 'Calibração do radar frontal (Opção 1)',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/590.pdf'
+            },
+            {
+                'name': 'Calibração do radar frontal (Opção 2)',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/650.pdf'
+            },
+            {
+                'name': 'Calibração do radar frontal (Opção 3)',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/363.pdf'
+            }
+        ]
+    },
+    
+    'HYUNDAI': {
+        'camera_frontal': [
+            {
+                'name': 'Calibração da câmera frontal (Opção 1)',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/422.pdf'
+            },
+            {
+                'name': 'Calibração da câmera frontal (Opção 2)',
+                'link': 'http://mediathek.bosch-automotive.com/files/common/documents/1690/386070.pdf'
+            }
+        ],
+        'radar_frontal': [
+            {
+                'name': 'Calibração do radar frontal (Opção 1)',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/594.pdf'
+            },
+            {
+                'name': 'Calibração do radar frontal (Opção 2)',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/654.pdf'
+            },
+            {
+                'name': 'Calibração do radar frontal (Opção 3)',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/367.pdf'
+            }
+        ]
+    },
+    
+    'IVECO': {
+        'camera_frontal': [
+            {
+                'name': 'Calibração da câmera frontal',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/555.pdf'
+            }
+        ]
+    },
+    
+    'KIA': {
+        'camera_frontal': [
+            {
+                'name': 'Calibração da câmera frontal (Opção 1)',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/423.pdf'
+            },
+            {
+                'name': 'Calibração da câmera frontal (Opção 2)',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/371.pdf'
+            }
+        ],
+        'radar_frontal': [
+            {
+                'name': 'Calibração do radar frontal (Opção 1)',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/593.pdf'
+            },
+            {
+                'name': 'Calibração do radar frontal (Opção 2)',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/653.pdf'
+            },
+            {
+                'name': 'Calibração do radar frontal (Opção 3)',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/366.pdf'
+            }
+        ]
+    },
+    
+    'LAMBORGHINI': {
+        'camera_frontal': [
+            {
+                'name': 'Calibração da câmera frontal (Opção 1)',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/536.pdf'
+            },
+            {
+                'name': 'Calibração da câmera frontal (Opção 2)',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/535.pdf'
+            }
+        ]
+    },
+    
+    'LEXUS': {
+        'camera_frontal': [
+            {
+                'name': 'Calibração da câmera frontal (Opção 1)',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/416.pdf'
+            },
+            {
+                'name': 'Calibração da câmera frontal (Opção 2)',
+                'link': 'http://mediathek.bosch-automotive.com/files/common/documents/1689/989491.pdf'
+            }
+        ],
+        'radar_frontal': [
+            {
+                'name': 'Calibração do radar frontal (Opção 1)',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/595.pdf'
+            },
+            {
+                'name': 'Calibração do radar frontal (Opção 2)',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/655.pdf'
+            },
+            {
+                'name': 'Calibração do radar frontal (Opção 3)',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/490.pdf'
+            }
+        ]
+    },
+    
+    'TOYOTA': {
+        'camera_frontal': [
+            {
+                'name': 'Calibração da câmera frontal (Opção 1)',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/435.pdf'
+            },
+            {
+                'name': 'Calibração da câmera frontal (Opção 2)',
+                'link': 'http://mediathek.bosch-automotive.com/files/common/documents/1690/386074.pdf'
+            }
+        ],
+        'radar_frontal': [
+            {
+                'name': 'Calibração do radar frontal (Opção 1)',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/591.pdf'
+            },
+            {
+                'name': 'Calibração do radar frontal (Opção 2)',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/651.pdf'
+            }
+        ]
+    },
+    
+    'VOLKSWAGEN': {
+        'camera_360': [
+            {
+                'name': 'Calibração da câmera 360 graus (visão surround)',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/498.pdf'
+            }
+        ],
+        'camera_frontal': [
+            {
+                'name': 'Calibração da câmera frontal (Opção 1)',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/436.pdf'
+            },
+            {
+                'name': 'Calibração da câmera frontal (Opção 2)',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/381.pdf'
+            }
+        ],
+        'camera_traseira': [
+            {
+                'name': 'Calibração da câmera traseira',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/499.pdf'
+            }
+        ],
+        'radar_frontal': [
+            {
+                'name': 'Calibração do radar frontal',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/438.pdf'
+            }
+        ],
+        'radar_traseiro': [
+            {
+                'name': 'Calibração do radar traseiro',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/577.pdf'
+            }
+        ]
+    },
+    
+    'RENAULT': {
+        'camera_frontal': [
+            {
+                'name': 'Calibração da câmera frontal (Opção 1)',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/430.pdf'
+            },
+            {
+                'name': 'Calibração da câmera frontal (Opção 2)',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/405.pdf'
+            }
+        ],
+        'radar_frontal': [
+            {
+                'name': 'Calibração do radar frontal',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/438.pdf'
+            }
+        ]
+    },
+    
+    'PEUGEOT': {
+        'camera_frontal': [
+            {
+                'name': 'Calibração da câmera frontal (Opção 1)',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/428.pdf'
+            },
+            {
+                'name': 'Calibração da câmera frontal (Opção 2)',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/369.pdf'
+            }
+        ]
+    },
+    
+    'NISSAN': {
+        'camera_frontal': [
+            {
+                'name': 'Calibração da câmera frontal (Opção 1)',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/427.pdf'
+            },
+            {
+                'name': 'Calibração da câmera frontal (Opção 2)',
+                'link': 'http://mediathek.bosch-automotive.com/files/common/documents/1690/386073.pdf'
+            }
+        ],
+        'radar_frontal': [
+            {
+                'name': 'Calibração do radar frontal',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/438.pdf'
+            }
+        ]
+    },
+    
+    'OPEL': {
+        'camera_frontal': [
+            {
+                'name': 'Calibração da câmera frontal (Opção 1)',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/450.pdf'
+            },
+            {
+                'name': 'Calibração da câmera frontal (Opção 2)',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/406.pdf'
+            }
+        ]
+    },
+    
+    'CHEVROLET': {
+        'camera_frontal': [
+            {
+                'name': 'Calibração da câmera frontal (Opção 1)',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/450.pdf'
+            },
+            {
+                'name': 'Calibração da câmera frontal (Opção 2)',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/406.pdf'
+            }
+        ]
+    },
+    
+    'VOLVO': {
+        'camera_frontal': [
+            {
+                'name': 'Calibração da câmera frontal (Opção 1)',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/552.pdf'
+            },
+            {
+                'name': 'Calibração da câmera frontal (Opção 2)',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/553.pdf'
+            }
+        ]
+    },
+    
+    'SUBARU': {
+        'camera_frontal': [
+            {
+                'name': 'Calibração da câmera frontal (Opção 1)',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/434.pdf'
+            },
+            {
+                'name': 'Calibração da câmera frontal (Opção 2)',
+                'link': 'http://mediathek.bosch-automotive.com/files/common/documents/1689/989392.pdf'
+            }
+        ]
+    },
+    
+    'PORSCHE': {
+        'camera_frontal': [
+            {
+                'name': 'Calibração da câmera frontal (Opção 1)',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/429.pdf'
+            },
+            {
+                'name': 'Calibração da câmera frontal (Opção 2)',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/398.pdf'
+            }
+        ],
+        'radar_frontal': [
+            {
+                'name': 'Calibração do radar frontal',
+                'link': 'http://mediathek.bosch-automotive.com/files/bosch_wa/989/438.pdf'
+            }
+        ]
     }
 }
 
@@ -231,119 +647,6 @@ def get_specific_calibration_link(brand_name, calibration_type):
                 return brand_links[link_type][0]  # Retorna o primeiro link
     
     return None
-    """Retorna links específicos de calibração baseado na marca e características do veículo"""
-    if not brand_name:
-        return []
-    
-    # Normalizar nome da marca
-    brand_upper = brand_name.upper().strip()
-    
-    # Verificar se a marca está no piloto
-    if brand_upper not in BOSCH_CALIBRATION_LINKS:
-        return []
-    
-    brand_links = BOSCH_CALIBRATION_LINKS[brand_upper]
-    available_links = []
-    
-    # Mapear características do veículo para tipos de calibração
-    characteristics = {
-        'ADAS no Parabrisa': vehicle_data.get('ADAS no Parabrisa', ''),
-        'Adas no Parachoque': vehicle_data.get('Adas no Parachoque', ''),
-        'Camera no Retrovisor': vehicle_data.get('Camera no Retrovisor', ''),
-        'Faróis Matrix': vehicle_data.get('Faróis Matrix', '')
-    }
-    
-    # Câmera frontal (ADAS no parabrisa)
-    if characteristics['ADAS no Parabrisa'] == 'Sim':
-        if 'camera_frontal' in brand_links:
-            available_links.extend(brand_links['camera_frontal'])
-        # Para Mercedes, verificar se tem AR
-        if brand_upper in ['MERCEDES', 'MERCEDES-BENZ'] and 'camera_frontal_ar' in brand_links:
-            available_links.extend(brand_links['camera_frontal_ar'])
-    
-    # Radar frontal (ADAS no parachoque)
-    if characteristics['Adas no Parachoque'] == 'Sim':
-        if 'radar_frontal' in brand_links:
-            available_links.extend(brand_links['radar_frontal'])
-    
-    # Câmera traseira (baseado em câmera retrovisor)
-    if characteristics['Camera no Retrovisor'] == 'Sim':
-        if 'camera_traseira' in brand_links:
-            available_links.extend(brand_links['camera_traseira'])
-        if 'radar_traseiro' in brand_links:
-            available_links.extend(brand_links['radar_traseiro'])
-    
-    # Para Audi, adicionar opções especiais
-    if brand_upper == 'AUDI':
-        if 'camera_360' in brand_links:
-            available_links.extend(brand_links['camera_360'])
-        if 'lidar' in brand_links:
-            available_links.extend(brand_links['lidar'])
-    
-    return available_links
-
-# Mapeamento das marcas para links da documentação Bosch (fallback)
-BOSCH_LINKS = {
-    'ALFA ROMEO': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
-    'AUDI': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
-    'BENTLEY': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
-    'BMW': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
-    'MINI': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
-    'CITROEN': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
-    'CUPRA': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
-    'DAIHATSU': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
-    'FIAT': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
-    'JEEP': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
-    'FORD': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
-    'HONDA': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
-    'HYUNDAI': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
-    'INFINITI': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
-    'IVECO': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
-    'KIA': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
-    'LAMBORGHINI': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
-    'LEXUS': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
-    'MAN': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
-    'MASERATI': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
-    'MAZDA': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
-    'MERCEDES': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
-    'MERCEDES-BENZ': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
-    'MITSUBISHI': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
-    'NISSAN': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
-    'OPEL': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
-    'PEUGEOT': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
-    'POLESTAR': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
-    'PORSCHE': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
-    'RENAULT': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
-    'SEAT': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
-    'SKODA': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
-    'SMART': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
-    'SUBARU': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
-    'SUZUKI': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
-    'TOYOTA': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
-    'VOLKSWAGEN': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
-    'VOLVO': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default',
-    'LAND ROVER': 'https://help.boschdiagnostics.com/DAS3000/#/home/Onepager/pt/default'
-}
-
-def get_bosch_link(brand_name):
-    """Retorna o link específico da Bosch para a marca"""
-    if not brand_name:
-        return None
-    
-    # Normalizar nome da marca
-    brand_upper = brand_name.upper().strip()
-    
-    # Verificar variações comuns
-    brand_mapping = {
-        'BMW/MINI': 'BMW',
-        'FIAT/JEEP': 'FIAT',
-        'MERCEDES-BENZ': 'MERCEDES',
-        'VOLVO CAMINHÕES': 'VOLVO'
-    }
-    
-    brand_normalized = brand_mapping.get(brand_upper, brand_upper)
-    
-    return BOSCH_LINKS.get(brand_normalized)
 
 @st.cache_data
 def load_vehicle_data():
@@ -547,8 +850,6 @@ def main():
                     
                     with col1:
                         st.write("**🎯 Características ADAS:**")
-                    with col1:
-                        st.write("**🎯 Características ADAS:**")
                         
                         # ADAS no Parabrisa com link integrado
                         parabrisa_value = vehicle.get('ADAS no Parabrisa', 'N/A')
@@ -648,9 +949,9 @@ def main():
                         icon_matrix = "✅" if matrix_value == "Sim" else "❌" if matrix_value == "Não" else "❓"
                         st.write(f"• Faróis Matrix: {icon_matrix}")
                         
-                        # Links especiais para Audi
+                        # Links especiais para Audi e Volkswagen (câmera 360)
                         brand_name = vehicle.get('BrandName', '').upper()
-                        if brand_name == 'AUDI':
+                        if brand_name in ['AUDI', 'VOLKSWAGEN']:
                             # Câmera 360
                             camera_360_link = get_specific_calibration_link(brand_name, 'camera_360')
                             if camera_360_link:
@@ -675,8 +976,9 @@ def main():
                                         </button>
                                     </a>
                                     """, unsafe_allow_html=True)
-                            
-                            # Lidar
+                        
+                        # Lidar especial para Audi
+                        if brand_name == 'AUDI':
                             lidar_link = get_specific_calibration_link(brand_name, 'lidar')
                             if lidar_link:
                                 col_lidar_1, col_lidar_2 = st.columns([2, 1])
@@ -710,7 +1012,14 @@ def main():
                     
                     # Aviso sobre piloto e links disponíveis
                     brand_name = vehicle.get('BrandName', '')
-                    if brand_name.upper() in ['ALFA ROMEO', 'AUDI', 'BENTLEY', 'BMW', 'MINI', 'MERCEDES', 'MERCEDES-BENZ']:
+                    pilot_brands = [
+                        'ALFA ROMEO', 'AUDI', 'BENTLEY', 'BMW', 'MINI', 'MERCEDES', 'MERCEDES-BENZ',
+                        'CITROEN', 'CUPRA', 'DAIHATSU', 'FIAT', 'JEEP', 'FORD', 'HONDA', 'HYUNDAI',
+                        'IVECO', 'KIA', 'LAMBORGHINI', 'LEXUS', 'TOYOTA', 'VOLKSWAGEN', 'RENAULT',
+                        'PEUGEOT', 'NISSAN', 'OPEL', 'CHEVROLET', 'VOLVO', 'SUBARU', 'PORSCHE'
+                    ]
+                    
+                    if brand_name.upper() in pilot_brands:
                         st.success(f"""
                         🎯 **{brand_name} - Piloto Ativo:** Links específicos de calibração integrados acima conforme características detectadas
                         """)
