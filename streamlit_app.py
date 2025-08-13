@@ -650,7 +650,7 @@ def get_specific_calibration_link(brand_name, calibration_type):
 
 @st.cache_data
 def load_vehicle_data(uploaded_file=None):
-    """Carrega dados com suporte prioritário ao XLSX e fallback para CSV"""
+    """Desenvolvido por Vinicius Paschoa"""
     
     try:
         if uploaded_file is not None:
