@@ -13,7 +13,7 @@ st.set_page_config(
 st.markdown("""
 <style>
     .main-header {
-        background: linear-gradient(90deg, #1e3c72 0%, #2a5298 100%);
+        background: linear-gradient(90deg, #cc092f 0%, #e30613 100%);
         padding: 1rem;
         border-radius: 10px;
         color: white;
